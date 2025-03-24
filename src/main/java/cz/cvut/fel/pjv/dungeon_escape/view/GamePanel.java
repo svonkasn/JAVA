@@ -40,6 +40,9 @@ public class GamePanel extends Application {
 //    root.setOnKeyReleased(inputHandler::keyReleased);
 
 
+
+
+
     startGameLoop();
 
     Scene scene = new Scene(root, width, height);
