@@ -21,8 +21,9 @@ public class GamePanel extends Application {
 
   private final Canvas canvas = new Canvas(width, height);
   private GraphicsContext gc;
+  private InputHandler inputHandler;
+  private Player player;
 
-  InputHandler keyH = new InputHandler();
 
   private double playerX = 100; // Pozice hráče
   private double playerY = 100;
@@ -34,8 +35,7 @@ public class GamePanel extends Application {
     gc = canvas.getGraphicsContext2D();
     StackPane root = new StackPane(canvas);
 
-//    player = new Player(10,10,10);
-//    inputHandler = new InputHandler(player);
+    player = new Player(10,10,10);
 //    root.setOnKeyPressed(inputHandler::keyPressed);
 //    root.setOnKeyReleased(inputHandler::keyReleased);
 
@@ -43,6 +43,8 @@ public class GamePanel extends Application {
     startGameLoop();
 
     Scene scene = new Scene(root, width, height);
+    inputHandler = new InputHandler(scene);
+
     stage.setTitle("Preview");
     stage.setScene(scene);
     stage.show();
@@ -53,18 +55,30 @@ public class GamePanel extends Application {
   private void draw() {
     gc.clearRect(0, 0, width, height);
     gc.drawImage(backgroundImage, 0, 0);
-    gc.fillRect(playerX, playerY, 30, 30); // Černý čtverec jako hráč
+    gc.fillRect(playerX, playerY, 30, 30);
   }
   private void update() {
-    if (keyH.upPressed){
-      playerY -= speed;
-    } else if (keyH.downPressed) {
-      playerY += speed;
-    } else if (keyH.leftPressed) {
-      playerX -= speed;
-    } else if (keyH.rightPressed) {
-      playerX += speed;
-    }
+    player.move(
+      inputHandler.isUpPressed(),
+      inputHandler.isDownPressed(),
+      inputHandler.isLeftPressed(),
+      inputHandler.isRightPressed()
+    );
+//    if (inputHandler.isUpPressed()) {
+//      System.out.println("Up");
+//      //
+//    }
+//    if (inputHandler.isDownPressed()) {
+//      System.out.println("Down");
+//      //
+//    }
+//    if (inputHandler.isLeftPressed()) {
+//      System.out.println("Left");
+//      //
+//    }
+//    if (inputHandler.isRightPressed()) {
+//      System.out.println("Right");
+//    }
 //    player.move(dx, dy);
 //    playerX += speed;
 //    if (playerX > width) playerX = 0;

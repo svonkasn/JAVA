@@ -1,59 +1,50 @@
 package cz.cvut.fel.pjv.dungeon_escape.controller;
+import javafx.scene.Scene;
+import javafx.scene.input.KeyCode;
 
-import cz.cvut.fel.pjv.dungeon_escape.model.Player;
+public class InputHandler {
+  private boolean upPressed = false;
+  private boolean downPressed = false;
+  private boolean leftPressed = false;
+  private boolean rightPressed = false;
 
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
+  public InputHandler(Scene scene) {
+    scene.setOnKeyPressed(event -> {
+      KeyCode code = event.getCode();
+      switch (code) {
+        case W -> upPressed = true; // Вверх
+        case S -> downPressed = true; // Вниз
+        case A -> leftPressed = true; // Влево
+        case D -> rightPressed = true; // Вправо
+        default -> {}
+      }
+    });
 
-public class InputHandler extends KeyAdapter {
-//  private Player player;
-//  private int dx = 0, dy = 0;
-  public boolean upPressed;
-  public boolean downPressed;
-  public boolean leftPressed;
-  public boolean rightPressed;
-
-//  public InputHandler(Player player) {
-//    this.player = player;
-//  }
-
-  public void keyPressed(KeyEvent e) {
-    int code = e.getKeyCode();
-    if (code == KeyEvent.VK_W)
-      upPressed = true;
-    if (code == KeyEvent.VK_S)
-      downPressed = true;
-    if (code == KeyEvent.VK_D)
-      leftPressed = true;
-    if(code == KeyEvent.VK_A)
-      rightPressed = true;
-    }
-
-  public void keyRelease(KeyEvent e) {
-    int code = e.getKeyCode();
-    if (code == KeyEvent.VK_W)
-      upPressed = false;
-    if (code == KeyEvent.VK_S)
-      downPressed = false;
-    if (code == KeyEvent.VK_D)
-      leftPressed = false;
-    if(code == KeyEvent.VK_A)
-      rightPressed = false;
+    scene.setOnKeyReleased(event -> {
+      KeyCode code = event.getCode();
+      switch (code) {
+        case W -> upPressed = false;
+        case S -> downPressed = false;
+        case A -> leftPressed = false;
+        case D -> rightPressed = false;
+        default -> {}
+      }
+    });
   }
 
-
-//    switch (e.getKeyCode()) {
-//      case KeyEvent.VK_UP:
-//        player.move(0, -1);
-//        break;
-//      case KeyEvent.VK_DOWN:
-//        player.move(0, 1);
-//        break;
-//      case KeyEvent.VK_LEFT:
-//        player.move(-1, 0);
-//        break;
-//    }
+  public boolean isUpPressed() {
+    return upPressed;
   }
 
+  public boolean isDownPressed() {
+    return downPressed;
+  }
 
+  public boolean isLeftPressed() {
+    return leftPressed;
+  }
 
+  public boolean isRightPressed() {
+    return rightPressed;
+  }
+}

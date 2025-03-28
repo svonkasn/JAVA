@@ -5,7 +5,7 @@ public class Player {
     private int y;
     private int keys = 0;
     private int health;
-
+    private double speed = 5;
 
 
   public Player(int x, int y, int health) {
@@ -15,9 +15,11 @@ public class Player {
 
   }
 
-  public void move(int dx, int dy){
-    this.x += dx;
-    this.y += dy;
+  public void move(boolean up, boolean down, boolean left, boolean right) {
+    if (up) y -= speed;
+    if (down) y += speed;
+    if (left) x -= speed;
+    if (right) x += speed;
   }
 
   public void addKey(){
