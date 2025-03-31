@@ -1,50 +1,26 @@
 package cz.cvut.fel.pjv.dungeon_escape.controller;
+import cz.cvut.fel.pjv.dungeon_escape.model.Game;
 import javafx.scene.Scene;
 import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 
 public class InputHandler {
-  private boolean upPressed = false;
-  private boolean downPressed = false;
-  private boolean leftPressed = false;
-  private boolean rightPressed = false;
+  private Game game;
 
-  public InputHandler(Scene scene) {
-    scene.setOnKeyPressed(event -> {
-      KeyCode code = event.getCode();
-      switch (code) {
-        case W -> upPressed = true;
-        case S -> downPressed = true;
-        case A -> leftPressed = true;
-        case D -> rightPressed = true;
-        default -> {}
-      }
-    });
+  public InputHandler(Scene scene, Game game) {
+    this.game = game;
 
-    scene.setOnKeyReleased(event -> {
-      KeyCode code = event.getCode();
-      switch (code) {
-        case W -> upPressed = false;
-        case S -> downPressed = false;
-        case A -> leftPressed = false;
-        case D -> rightPressed = false;
-        default -> {}
-      }
-    });
+    scene.setOnKeyPressed(event -> handleInput(event, true));
+    scene.setOnKeyReleased(event -> handleInput(event, false));
   }
 
-  public boolean isUpPressed() {
-    return upPressed;
+  private void handleInput(KeyEvent event, boolean isPressed) {
+    boolean up = event.getCode() == KeyCode.W;
+    boolean down = event.getCode() == KeyCode.S;
+    boolean left = event.getCode() == KeyCode.A;
+    boolean right = event.getCode() == KeyCode.D;
+
+    game.movePlayer(up, down, left, right);
   }
 
-  public boolean isDownPressed() {
-    return downPressed;
-  }
-
-  public boolean isLeftPressed() {
-    return leftPressed;
-  }
-
-  public boolean isRightPressed() {
-    return rightPressed;
-  }
 }

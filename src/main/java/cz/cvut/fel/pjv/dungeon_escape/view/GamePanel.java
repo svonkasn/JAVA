@@ -22,7 +22,7 @@ public class GamePanel extends Application {
   Map<ImageId, Image> gameImages = new EnumMap<>(ImageId.class);
 
   private InputHandler inputHandler;
-  private Player player;
+//  private Player player;
 
 
   @Override
@@ -38,9 +38,9 @@ public class GamePanel extends Application {
 
     StackPane root = new StackPane(canvas);
     Scene scene = new Scene(root, sceneWidth, sceneHeight);
-    inputHandler = new InputHandler(scene);
+    inputHandler = new InputHandler(scene,game);
 
-    player = new Player(10,10,10);
+//    player = new Player(ImageId., 10,10,10);
 
     stage.setTitle("Preview");
     stage.setScene(scene);
@@ -58,29 +58,23 @@ public class GamePanel extends Application {
 
   private void drawItems(Canvas canvas, Game game) {
     GraphicsContext gc = canvas.getGraphicsContext2D();
+//    gc.clearRect(0, 0, bgetWidth(), getHeight());
+
     for (DrawableItem di : game.getItemsToDraw())
       gc.drawImage(gameImages.get(di.imageId()), di.x(), di.y());
 
-    gc.fillRect(player.getX(), player.getY(), 30, 30);
+//    gc.fillRect(player.getX(), player.getY(), 30, 30);
 
   }
 
 
-  private void update() {
-    player.move(
-      inputHandler.isUpPressed(),
-      inputHandler.isDownPressed(),
-      inputHandler.isLeftPressed(),
-      inputHandler.isRightPressed()
-    );
 
-  }
 
   private void startGameLoop(Canvas canvas, Game game) {
     AnimationTimer gameLoop = new AnimationTimer() {
       @Override
       public void handle(long now) {
-        update();
+        game.update();
         drawItems(canvas, game);
       }
     };

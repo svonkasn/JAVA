@@ -1,7 +1,8 @@
 package cz.cvut.fel.pjv.dungeon_escape.model;
 
 public enum ImageId {
-  BGR("backround.jpg");
+  BGR("Sprite-0001.png"),
+  PLAYER("Sprite-0002.png");
 
   private final String fileName;
   private double width;

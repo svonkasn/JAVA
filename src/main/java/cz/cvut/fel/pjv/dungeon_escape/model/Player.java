@@ -1,23 +1,26 @@
 package cz.cvut.fel.pjv.dungeon_escape.model;
 
-public class Player {
-    private int x;
-    private int y;
+public class Player extends GameItem{
+    private double speedY;
     private int keys = 0;
     private int health;
-    private double speed = 5;
+    private double speed = 15;
 
 
-  public Player(int x, int y, int health) {
-    this.x = x;
-    this.y = y;
+  public Player(ImageId imageId, int x, int y,int health) {
+    super(imageId, x, y);
+    this.speedY = 0;
     this.health = health;
+
+  }
+  public void update(){
 
   }
 
   public void move(boolean up, boolean down, boolean left, boolean right) {
     if (up){
       y -= speed;
+//      speedY -= speed;
       System.out.println("Up");
     }
     if (down) y += speed;
@@ -28,12 +31,7 @@ public class Player {
   public void addKey(){
     this.keys++;
   }
-  public int getX() {
-    return x;
-  }
-  public int getY() {
-    return y;
-  }
+
 
   public int getHealth() {
     return health;
