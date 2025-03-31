@@ -12,10 +12,10 @@ public class InputHandler {
     scene.setOnKeyPressed(event -> {
       KeyCode code = event.getCode();
       switch (code) {
-        case W -> upPressed = true; // Вверх
-        case S -> downPressed = true; // Вниз
-        case A -> leftPressed = true; // Влево
-        case D -> rightPressed = true; // Вправо
+        case W -> upPressed = true;
+        case S -> downPressed = true;
+        case A -> leftPressed = true;
+        case D -> rightPressed = true;
         default -> {}
       }
     });

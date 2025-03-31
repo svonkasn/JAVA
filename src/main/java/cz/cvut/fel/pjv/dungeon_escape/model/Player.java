@@ -16,7 +16,10 @@ public class Player {
   }
 
   public void move(boolean up, boolean down, boolean left, boolean right) {
-    if (up) y -= speed;
+    if (up){
+      y -= speed;
+      System.out.println("Up");
+    }
     if (down) y += speed;
     if (left) x -= speed;
     if (right) x += speed;
