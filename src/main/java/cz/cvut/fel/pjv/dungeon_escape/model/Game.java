@@ -6,13 +6,13 @@ public class Game {
 
   public Game() {
     backround = new GameItem(ImageId.BGR, 0, 0);
-    player = new Player(ImageId.PLAYER,10, 10, 0);
+    player = new Player(ImageId.PLAYER,10, 450, 0);
   }
   public void update(){
     player.update();
   }
-  public void movePlayer(boolean up, boolean down, boolean left, boolean right) {
-    player.move(up, down, left, right);
+  public void movePlayer(boolean up, boolean down, boolean left, boolean right, boolean jump) {
+    player.move(up, down, left, right, jump);
   }
 
   public DrawableItem[] getItemsToDraw() {

@@ -6,6 +6,8 @@ import javafx.scene.input.KeyEvent;
 
 public class InputHandler {
   private Game game;
+  private boolean up, down, left, right, jump;
+
 
   public InputHandler(Scene scene, Game game) {
     this.game = game;
@@ -15,12 +17,15 @@ public class InputHandler {
   }
 
   private void handleInput(KeyEvent event, boolean isPressed) {
-    boolean up = event.getCode() == KeyCode.W;
-    boolean down = event.getCode() == KeyCode.S;
-    boolean left = event.getCode() == KeyCode.A;
-    boolean right = event.getCode() == KeyCode.D;
+    switch (event.getCode()) {
+      case W -> up = isPressed;
+      case S -> down = isPressed;
+      case A -> left = isPressed;
+      case D -> right = isPressed;
+      case SPACE -> jump = isPressed;
+    }
 
-    game.movePlayer(up, down, left, right);
+    game.movePlayer(up, down, left, right, jump);
   }
 
 }
