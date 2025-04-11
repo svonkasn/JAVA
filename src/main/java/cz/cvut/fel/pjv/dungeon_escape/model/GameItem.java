@@ -1,5 +1,8 @@
 package cz.cvut.fel.pjv.dungeon_escape.model;
 
+
+import javafx.geometry.BoundingBox;
+
 public class GameItem {
   protected final ImageId imageId;
   protected double x;
@@ -10,6 +13,7 @@ public class GameItem {
     this.x = x;
     this.y = y;
   }
+
   public ImageId getImageId() {
     return imageId;
   }
@@ -28,5 +32,9 @@ public class GameItem {
 
   public void setY(double y) {
     this.y = y;
+  }
+
+  public BoundingBox getBoundingBox() {
+    return new BoundingBox(x, y, imageId.getWidth(), imageId.getHeight());
   }
 }

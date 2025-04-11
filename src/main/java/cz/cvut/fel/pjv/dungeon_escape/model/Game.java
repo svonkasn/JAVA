@@ -13,6 +13,29 @@ public class Game {
   }
   public void movePlayer(boolean up, boolean down, boolean left, boolean right, boolean jump) {
     player.move(up, down, left, right, jump);
+
+  }
+  public boolean checkCollision(double nextX, double nextY) {
+    double width = ImageId.BGR.getWidth();
+    double height = ImageId.BGR.getHeight();
+    System.out.println("X: " + nextX + " width: " + backround.getBoundingBox().getMaxX() );
+    System.out.println("X:" + player.getBoundingBox().getMaxY() + " height: " + backround.getBoundingBox().getMaxY());
+
+    return nextX <= backround.getBoundingBox().getMaxX()
+      && nextX >= backround.getBoundingBox().getMinX()
+      && nextY <= backround.getBoundingBox().getMaxY()
+      && nextY >= backround.getBoundingBox().getMinY();
+  }
+
+  public boolean checkCollision() {
+    double width = ImageId.BGR.getWidth();
+    double height = ImageId.BGR.getHeight();
+    System.out.println(ImageId.BGR.getWidth() + " " + ImageId.BGR.getHeight());
+    System.out.println(player.getX());
+    System.out.println(player.getY());
+    return  player.getX() > width &&
+      player.getY() > height;
+
   }
 
   public DrawableItem[] getItemsToDraw() {
