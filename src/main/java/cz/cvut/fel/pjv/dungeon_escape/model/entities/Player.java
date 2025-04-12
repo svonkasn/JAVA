@@ -1,8 +1,11 @@
-package cz.cvut.fel.pjv.dungeon_escape.model;
+package cz.cvut.fel.pjv.dungeon_escape.model.entities;
 
 
+import cz.cvut.fel.pjv.dungeon_escape.model.Game;
+import cz.cvut.fel.pjv.dungeon_escape.model.GameItem;
+import cz.cvut.fel.pjv.dungeon_escape.model.ImageId;
 
-public class Player extends GameItem{
+public class Player extends GameItem {
     private final double acceleration = 0.1;
     private double gravity = 0.5;
     private int health;
@@ -11,7 +14,7 @@ public class Player extends GameItem{
   private boolean isJumping = false;
 
 
-  public Player(ImageId imageId, int x, int y,int health) {
+  public Player(ImageId imageId, int x, int y, int health) {
     super(imageId, x, y);
 //    this.speedY = 0;
     this.health = health;

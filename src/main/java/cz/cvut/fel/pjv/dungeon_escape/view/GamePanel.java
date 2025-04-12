@@ -4,7 +4,6 @@ import cz.cvut.fel.pjv.dungeon_escape.controller.InputHandler;
 import cz.cvut.fel.pjv.dungeon_escape.model.DrawableItem;
 import cz.cvut.fel.pjv.dungeon_escape.model.Game;
 import cz.cvut.fel.pjv.dungeon_escape.model.ImageId;
-import cz.cvut.fel.pjv.dungeon_escape.model.Player;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.scene.Scene;

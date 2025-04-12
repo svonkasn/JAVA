@@ -1,5 +1,7 @@
 package cz.cvut.fel.pjv.dungeon_escape.model;
 
+import cz.cvut.fel.pjv.dungeon_escape.model.entities.Player;
+
 public class Game {
   private final GameItem backround;
   private final Player player;
