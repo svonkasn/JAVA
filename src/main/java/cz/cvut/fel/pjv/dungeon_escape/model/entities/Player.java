@@ -44,4 +44,7 @@ public class Player extends GameItem {
     return health;
   }
 
+  public void heal(int heal) {
+    health += heal;
+  }
 }
