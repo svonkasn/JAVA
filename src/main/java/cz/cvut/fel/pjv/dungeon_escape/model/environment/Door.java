@@ -22,4 +22,8 @@ public class Door extends GameItem {
     *   ????
     * */
   }
+
+  public String getDoorKey() {
+    return imageId.getFileName();
+  }
 }

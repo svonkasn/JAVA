@@ -1,4 +1,18 @@
 package cz.cvut.fel.pjv.dungeon_escape.model.entities;
 
-public class Slime {
+import cz.cvut.fel.pjv.dungeon_escape.model.ImageId;
+
+public class Slime extends Enemy {
+
+  public Slime(ImageId imageId, double x, double y) {
+    super(imageId, x, y);
+  }
+  @Override
+  public void attack(){
+    // TODO
+  }
+  @Override
+  public void takeDamage(int damage) {
+    // TODO
+  }
 }
