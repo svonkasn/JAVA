@@ -6,39 +6,51 @@ import cz.cvut.fel.pjv.dungeon_escape.model.GameItem;
 import cz.cvut.fel.pjv.dungeon_escape.model.ImageId;
 
 public class Player extends GameItem {
-    private final double acceleration = 0.1;
-    private double gravity = 0.5;
-    private int health;
-    private double speed = 15;
-  private double velocityY = 0;
-  private boolean isJumping = false;
+  private final double gravity;
+  private int health;
+  private double speed;
+  private boolean isOnGround;
 
 
-  public Player(ImageId imageId, int x, int y, int health) {
+  public Player(ImageId imageId, int x, int y, int health, double gravity) {
     super(imageId, x, y);
-//    this.speedY = 0;
+    this.gravity = gravity;
     this.health = health;
-
+    this.speed = 0;
+    this.isOnGround = false;
   }
   public void update() {
-
+    if(!isOnGround) {
+      speed += gravity;
+      y += speed;
+    }else{
+      speed = 0;
+    }
   }
   public void move(boolean up, boolean down, boolean left, boolean right, boolean jump) {
+    double moveSpeed = 2.0;
+    if (left) x -= moveSpeed;
+    if (right) x += moveSpeed;
 
-    Game game = new Game();
+    if (up) y -= moveSpeed;
+    if (down) y += moveSpeed;
 
-    if (up) y -= speed;
-    if (down) y += speed;
-    if (left) x -= speed;
-    if (right) x += speed;
-    System.out.println(game.checkCollision(x, y));
+    if (jump && isOnGround) {
+      speed = -10;
+      isOnGround = false;
+    }
+  }
+  public void setSpeed(double speed) {
+    this.speed = speed;
   }
 
+  public double getSpeed() {
+    return speed;
+  }
 
-//  public void addKey(){
-//    this.keys++;
-//  }
-
+  public void setOnGround(boolean onGround) {
+    isOnGround = onGround;
+  }
 
   public int getHealth() {
     return health;
