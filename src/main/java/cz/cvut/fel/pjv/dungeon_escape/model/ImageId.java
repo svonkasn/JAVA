@@ -1,9 +1,11 @@
 package cz.cvut.fel.pjv.dungeon_escape.model;
 
 public enum ImageId {
-  BGR("back.png"),
+  BGR("background.png"),
   PLAYER("player1.png"),
-  PLATFORM("Sprite-0003.png");
+  PLATFORM("platrform1.png"),
+  GROUND("ground.png"),;
+
 
   private final String fileName;
   private double width;

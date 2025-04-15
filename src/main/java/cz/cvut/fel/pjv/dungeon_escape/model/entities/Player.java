@@ -28,15 +28,19 @@ public class Player extends GameItem {
     }
   }
   public void move(boolean up, boolean down, boolean left, boolean right, boolean jump) {
-    double moveSpeed = 2.0;
+    double moveSpeed = 8.0;
     if (left) x -= moveSpeed;
     if (right) x += moveSpeed;
 
     if (up) y -= moveSpeed;
     if (down) y += moveSpeed;
 
+
     if (jump && isOnGround) {
-      speed = -10;
+      speed = -8.5;
+      isOnGround = false;
+    }
+    if(isOnGround) {
       isOnGround = false;
     }
   }

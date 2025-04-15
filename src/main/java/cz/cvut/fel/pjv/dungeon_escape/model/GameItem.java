@@ -35,6 +35,9 @@ public class GameItem {
   }
 
   public BoundingBox getBoundingBox() {
-    return new BoundingBox(x, y, imageId.getWidth(), imageId.getHeight());
+    double paddingY = 20;
+
+    return new BoundingBox(x, y,
+      imageId.getWidth(), imageId.getHeight() - paddingY);
   }
 }
