@@ -21,7 +21,6 @@ public class GamePanel extends Application {
   Map<ImageId, Image> gameImages = new EnumMap<>(ImageId.class);
 
   private InputHandler inputHandler;
-//  private Player player;
 
 
   @Override
@@ -38,6 +37,9 @@ public class GamePanel extends Application {
     StackPane root = new StackPane(canvas);
     Scene scene = new Scene(root, sceneWidth, sceneHeight);
     inputHandler = new InputHandler(scene,game);
+
+    MainMenu mainMenu = new MainMenu(stage, scene, game);
+
 
 //    player = new Player(ImageId., 10,10,10);
 
@@ -65,8 +67,6 @@ public class GamePanel extends Application {
 //    gc.fillRect(player.getX(), player.getY(), 30, 30);
 
   }
-
-
 
 
   private void startGameLoop(Canvas canvas, Game game) {

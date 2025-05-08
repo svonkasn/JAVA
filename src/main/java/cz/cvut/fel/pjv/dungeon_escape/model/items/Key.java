@@ -6,6 +6,7 @@ import cz.cvut.fel.pjv.dungeon_escape.model.environment.Door;
 
 public class Key extends GameItem {
   private final String doorKey;
+
   public Key(ImageId imageId, double x, double y, String doorKey) {
     super(imageId, x, y);
     this.doorKey = doorKey;

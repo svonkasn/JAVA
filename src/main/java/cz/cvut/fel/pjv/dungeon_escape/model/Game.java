@@ -1,10 +1,13 @@
 package cz.cvut.fel.pjv.dungeon_escape.model;
 
 import cz.cvut.fel.pjv.dungeon_escape.model.entities.Player;
+import cz.cvut.fel.pjv.dungeon_escape.model.environment.Door;
+import cz.cvut.fel.pjv.dungeon_escape.model.items.Key;
 import javafx.geometry.BoundingBox;
 import javafx.geometry.Bounds;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class Game {
@@ -16,15 +19,25 @@ public class Game {
   private final Platforms platform;
   private final Platforms platform2;
   private final Platforms ground;
+  private final GameItem inventory;
+  private final Key key;
+  private final Door door;
+
+  private boolean isTakenKey = false;
 
   public Game() {
     backround = new GameItem(ImageId.BGR, 0, 0);
     platform = new Platforms(ImageId.PLATFORM,0, 0, -25, 350);
     platform2 = new Platforms(ImageId.PLATFORM,0, 0, 630, 170);
     ground = new Platforms(ImageId.GROUND,0, 0, 0, 690);
+    inventory = new GameItem(ImageId.INVENTORY, 0,0);
+    key = new Key(ImageId.KEY, 900,650,"key1");
+    door = new Door(ImageId.DOOR, 920, 50);
+
     addCollidableObject(platform2);
     addCollidableObject(platform);
     addCollidableObject(ground);
+
     player = new Player(ImageId.PLAYER,0, 0, 0, gravity);
   }
   public void update(){
@@ -35,7 +48,6 @@ public class Game {
   public void addCollidableObject(GameItem gameItem){
     collidableObjects.add(gameItem);
   }
-
   private void checkLevelBounds(Bounds playerBounds){
     BoundingBox backgroundBounds = backround.getBoundingBox();
 //    System.out.println(backgroundBounds.getHeight() + " " + backgroundBounds.getWidth());
@@ -60,11 +72,16 @@ public class Game {
       player.setSpeed(0);
     }
   }
-
   private void handleCollisions() {
     BoundingBox playerBounds = player.getBoundingBox();
-    // check backgound
+    // check background
     checkLevelBounds(playerBounds);
+
+    if(!isTakenKey && playerBounds.intersects(key.getBoundingBox())){
+      player.addInventory(key);
+      isTakenKey = true;
+      System.out.println("Taken key");
+    }
 
     // check with others objects
     for (GameItem object : collidableObjects) {
@@ -73,7 +90,6 @@ public class Game {
       }
     }
   }
-
   private void checkObjectCollision(BoundingBox playerBounds, BoundingBox objectBounds) {
     if (playerBounds.intersects(objectBounds)) {
       // sides overlaping
@@ -98,7 +114,7 @@ public class Game {
         player.setY((int)objectBounds.getMaxY());
         player.setSpeed(0);
       } else if (minOverlap == overlapLeft) {
-        // lwft
+        // left
         player.setX((int)(objectBounds.getMinX() - playerBounds.getWidth()));
       } else if (minOverlap == overlapRight) {
         // right
@@ -106,19 +122,28 @@ public class Game {
       }
     }
   }
-
   public void movePlayer(boolean up, boolean down, boolean left, boolean right, boolean jump) {
     player.move(up, down, left, right, jump);
   }
-
   public DrawableItem[] getItemsToDraw() {
-    return new DrawableItem[]{
+    List<DrawableItem> items = new ArrayList<>(Arrays.asList(
       new DrawableItem(backround.getImageId(), backround.getX(), backround.getY()),
+      new DrawableItem(inventory.getImageId(), inventory.getX(), inventory.getY()),
       new DrawableItem(platform.getImageId(), platform.getX(), platform.getY()),
       new DrawableItem(platform2.getImageId(), platform2.getX(), platform2.getY()),
+      new DrawableItem(door.getImageId(), door.getX(), door.getY()),
       new DrawableItem(ground.getImageId(), ground.getX(), ground.getY()),
       new DrawableItem(player.getImageId(), player.getX(), player.getY())
-    };
+    ));
+
+    for (GameItem item : player.getInventory().getItems()) {
+      items.add(new DrawableItem(item.getImageId(), item.getX(), item.getY()));
+    }
+    if (!isTakenKey) {
+      items.add(new DrawableItem(key.getImageId(), key.getX(), key.getY()));
+    }
+
+    return items.toArray(new DrawableItem[0]);
   }
 
 }

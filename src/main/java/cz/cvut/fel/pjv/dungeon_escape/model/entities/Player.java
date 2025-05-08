@@ -1,15 +1,16 @@
 package cz.cvut.fel.pjv.dungeon_escape.model.entities;
 
-
-import cz.cvut.fel.pjv.dungeon_escape.model.Game;
 import cz.cvut.fel.pjv.dungeon_escape.model.GameItem;
 import cz.cvut.fel.pjv.dungeon_escape.model.ImageId;
+import cz.cvut.fel.pjv.dungeon_escape.model.Inventory;
 
 public class Player extends GameItem {
   private final double gravity;
   private int health;
   private double speed;
   private boolean isOnGround;
+
+  private Inventory inventory;
 
 
   public Player(ImageId imageId, int x, int y, int health, double gravity) {
@@ -18,6 +19,7 @@ public class Player extends GameItem {
     this.health = health;
     this.speed = 0;
     this.isOnGround = false;
+    this.inventory = new Inventory();
   }
   public void update() {
     if(!isOnGround) {
@@ -27,6 +29,8 @@ public class Player extends GameItem {
       speed = 0;
     }
   }
+
+
   public void move(boolean up, boolean down, boolean left, boolean right, boolean jump) {
     double moveSpeed = 8.0;
     if (left) x -= moveSpeed;
@@ -34,7 +38,6 @@ public class Player extends GameItem {
 
     if (up) y -= moveSpeed;
     if (down) y += moveSpeed;
-
 
     if (jump && isOnGround) {
       speed = -8.5;
@@ -44,6 +47,14 @@ public class Player extends GameItem {
       isOnGround = false;
     }
   }
+  public Inventory getInventory() {
+    return inventory;
+  }
+
+  public void addInventory(GameItem item) {
+    inventory.addItm(item);
+  }
+
   public void setSpeed(double speed) {
     this.speed = speed;
   }

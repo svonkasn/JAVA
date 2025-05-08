@@ -4,7 +4,10 @@ public enum ImageId {
   BGR("background.png"),
   PLAYER("player1.png"),
   PLATFORM("platrform1.png"),
-  GROUND("ground.png"),;
+  GROUND("ground.png"),
+  INVENTORY("dialogues2.png"),
+  KEY("key.png"),
+  DOOR("door.png"),;
 
 
   private final String fileName;
