@@ -2,6 +2,7 @@ package cz.cvut.fel.pjv.dungeon_escape.controller;
 
 import cz.cvut.fel.pjv.dungeon_escape.model.Game;
 import cz.cvut.fel.pjv.dungeon_escape.model.GameItem;
+import cz.cvut.fel.pjv.dungeon_escape.model.GameState;
 import cz.cvut.fel.pjv.dungeon_escape.model.entities.Player;
 import javafx.geometry.BoundingBox;
 
@@ -9,15 +10,30 @@ import javafx.geometry.BoundingBox;
 public class GameController {
   private Game game;
   private InputHandler inputHandler;
+  private GameState state = GameState.RUNNING;
 
-  public GameController(Game game, InputHandler inputHandler) {
+  public GameController(Game game) {
     this.game = game;
+//    this.inputHandler = inputHandler;
+  }
+
+  public void setInputHandler(InputHandler inputHandler) {
     this.inputHandler = inputHandler;
   }
+
+  public GameState getGameState() {
+    return state;
+  }
+  public void setGameState(GameState gameState) {
+    this.state = gameState;
+  }
   public void update() {
-    handleInput();
-    game.updatePhysics(); // теперь Game не обрабатывает логику, только физику
-    handleInteractions();
+    if(state == GameState.RUNNING  && inputHandler != null) {
+      handleInput();
+      game.updatePhysics();
+      handleInteractions();
+    }
+
   }
   private void handleInput() {
     game.movePlayer(
@@ -49,7 +65,7 @@ public class GameController {
           player.getInventory().useKey();
           player.removeInventory(game.getKey());
           System.out.println("Door opened");
-          // можно тут вызывать game.nextLevel() или что-то похожее
+          // TODO: game.nextLevel()
         }
       }
     }
@@ -89,5 +105,13 @@ public class GameController {
         player.setX((int)objectBounds.getMaxX());
       }
     }
+  }
+
+  public void setState(GameState gameState) {
+    this.state = gameState;
+    game.setGameState(state);
+  }
+  public GameState getState() {
+    return state;
   }
 }

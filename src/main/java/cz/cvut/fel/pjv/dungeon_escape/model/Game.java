@@ -32,7 +32,7 @@ public class Game {
     ground = new Platforms(ImageId.GROUND,0, 0, 0, 690);
     inventory = new GameItem(ImageId.INVENTORY, 0,0);
     key = new Key(ImageId.KEY, 900,650,"key1");
-    door = new Door(ImageId.DOOR, 60, 500);
+    door = new Door(ImageId.DOOR, 900, 65);
 
     addCollidableObject(platform2);
     addCollidableObject(platform);
@@ -66,6 +66,7 @@ public class Game {
     return player.getInventory();
   }
 
+// Should be in GameController...?
   public void checkLevelBounds(){
     BoundingBox playerBounds = player.getBoundingBox();
     BoundingBox backgroundBounds = backround.getBoundingBox();
@@ -118,5 +119,16 @@ public class Game {
 
   public Player getPlayer() {
     return player;
+  }
+
+  public void setGameState(GameState state) {
+
+  }
+
+  public void reset() {
+    // reset game
+    player.resetPosition();
+    isTakenKey = false;
+
   }
 }

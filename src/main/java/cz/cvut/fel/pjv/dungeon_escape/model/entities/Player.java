@@ -78,4 +78,9 @@ public class Player extends GameItem {
   public void takeDamage(int damage) {
     health -= damage;
   }
+
+  public void resetPosition() {
+    setX(0);
+    setY(0);
+  }
 }

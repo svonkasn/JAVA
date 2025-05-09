@@ -1,16 +1,17 @@
 package cz.cvut.fel.pjv.dungeon_escape.controller;
-import cz.cvut.fel.pjv.dungeon_escape.model.Game;
 import javafx.scene.Scene;
-import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 
 public class InputHandler {
   private boolean up, down, left, right, jump;
+  private GameController gameController;
 
 
-  public InputHandler(Scene scene) {
+  public InputHandler(Scene scene, GameController gameController) {
+    this.gameController = gameController;
     scene.setOnKeyPressed(event -> handleInput(event, true));
     scene.setOnKeyReleased(event -> handleInput(event, false));
+
   }
 
   private void handleInput(KeyEvent event, boolean isPressed) {

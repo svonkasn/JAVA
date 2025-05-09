@@ -4,6 +4,7 @@ import cz.cvut.fel.pjv.dungeon_escape.controller.GameController;
 import cz.cvut.fel.pjv.dungeon_escape.controller.InputHandler;
 import cz.cvut.fel.pjv.dungeon_escape.model.DrawableItem;
 import cz.cvut.fel.pjv.dungeon_escape.model.Game;
+import cz.cvut.fel.pjv.dungeon_escape.model.GameState;
 import cz.cvut.fel.pjv.dungeon_escape.model.ImageId;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
@@ -11,6 +12,7 @@ import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
@@ -31,17 +33,24 @@ public class GamePanel extends Application {
     Canvas canvas = new Canvas(sceneWidth, sceneHeight);
     StackPane root = new StackPane(canvas);
     Scene scene = new Scene(root, sceneWidth, sceneHeight);
+
 // Init model and controller
     Game game = new Game();
-    InputHandler inputHandler = new InputHandler(scene);
-    GameController controller = new GameController(game, inputHandler);
+    GameController controller = new GameController(game);
+    InputHandler inputHandler = new InputHandler(scene, controller);
+    controller.setInputHandler(inputHandler);
 
+    MainMenu mainMenu = new MainMenu(stage, scene, game, controller);
+
+    scene.setOnKeyPressed(event -> {
+      if (event.getCode() == KeyCode.ESCAPE) {
+        controller.setState(GameState.PAUSED);
+        mainMenu.show();
+      }
+    });
     startGameLoop(canvas, game,controller);
 
-
-    MainMenu mainMenu = new MainMenu(stage, scene, game);
-
-    stage.setTitle("Preview");
+    stage.setTitle("Dungeon Escape");
     stage.setScene(scene);
     stage.show();
 
