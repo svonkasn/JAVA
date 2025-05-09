@@ -1,5 +1,6 @@
 package cz.cvut.fel.pjv.dungeon_escape.view;
 
+import cz.cvut.fel.pjv.dungeon_escape.controller.GameController;
 import cz.cvut.fel.pjv.dungeon_escape.controller.InputHandler;
 import cz.cvut.fel.pjv.dungeon_escape.model.DrawableItem;
 import cz.cvut.fel.pjv.dungeon_escape.model.Game;
@@ -20,28 +21,25 @@ import java.util.Map;
 public class GamePanel extends Application {
   Map<ImageId, Image> gameImages = new EnumMap<>(ImageId.class);
 
-  private InputHandler inputHandler;
-
-
   @Override
   public void start(Stage stage){
     loadImages();
 
     double sceneWidth = ImageId.BGR.getWidth();
     double sceneHeight = ImageId.BGR.getHeight();
-
-    Game game = new Game();
+//    Init canvas
     Canvas canvas = new Canvas(sceneWidth, sceneHeight);
-    startGameLoop(canvas, game);
-
     StackPane root = new StackPane(canvas);
     Scene scene = new Scene(root, sceneWidth, sceneHeight);
-    inputHandler = new InputHandler(scene,game);
+// Init model and controller
+    Game game = new Game();
+    InputHandler inputHandler = new InputHandler(scene);
+    GameController controller = new GameController(game, inputHandler);
+
+    startGameLoop(canvas, game,controller);
+
 
     MainMenu mainMenu = new MainMenu(stage, scene, game);
-
-
-//    player = new Player(ImageId., 10,10,10);
 
     stage.setTitle("Preview");
     stage.setScene(scene);
@@ -59,28 +57,22 @@ public class GamePanel extends Application {
 
   private void drawItems(Canvas canvas, Game game) {
     GraphicsContext gc = canvas.getGraphicsContext2D();
-//    gc.clearRect(0, 0, bgetWidth(), getHeight());
 
     for (DrawableItem di : game.getItemsToDraw())
       gc.drawImage(gameImages.get(di.imageId()), di.x(), di.y());
 
-//    gc.fillRect(player.getX(), player.getY(), 30, 30);
-
   }
 
 
-  private void startGameLoop(Canvas canvas, Game game) {
+  private void startGameLoop(Canvas canvas, Game game, GameController controller) {
     AnimationTimer gameLoop = new AnimationTimer() {
       @Override
       public void handle(long now) {
-        game.update();
+        controller.update();
         drawItems(canvas, game);
       }
     };
     gameLoop.start();
   }
 
-  public static void main(String[] args) {
-    launch();
-  }
 }

@@ -54,7 +54,7 @@ public class Player extends GameItem {
   public void addInventory(GameItem item) {
     inventory.addItm(item);
   }
-
+  public void removeInventory(GameItem item) {inventory.removeItm(item);}
   public void setSpeed(double speed) {
     this.speed = speed;
   }

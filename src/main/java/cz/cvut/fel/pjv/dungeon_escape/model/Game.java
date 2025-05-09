@@ -32,7 +32,7 @@ public class Game {
     ground = new Platforms(ImageId.GROUND,0, 0, 0, 690);
     inventory = new GameItem(ImageId.INVENTORY, 0,0);
     key = new Key(ImageId.KEY, 900,650,"key1");
-    door = new Door(ImageId.DOOR, 920, 50);
+    door = new Door(ImageId.DOOR, 60, 500);
 
     addCollidableObject(platform2);
     addCollidableObject(platform);
@@ -40,15 +40,34 @@ public class Game {
 
     player = new Player(ImageId.PLAYER,0, 0, 0, gravity);
   }
-  public void update(){
-      player.update();
-      handleCollisions();
 
-  }
   public void addCollidableObject(GameItem gameItem){
     collidableObjects.add(gameItem);
   }
-  private void checkLevelBounds(Bounds playerBounds){
+  public List<GameItem> getCollidableObjects(){
+    return collidableObjects;
+  }
+  public boolean isKeyTaken(){
+    return isTakenKey;
+  }
+  public void setKeyTaken(boolean taken){
+    isTakenKey = taken;
+  }
+  public void updatePhysics(){
+    player.update();
+  }
+  public Key getKey(){
+    return key;
+  }
+  public Door getDoor(){
+    return door;
+  }
+  public Inventory getInventory(){
+    return player.getInventory();
+  }
+
+  public void checkLevelBounds(){
+    BoundingBox playerBounds = player.getBoundingBox();
     BoundingBox backgroundBounds = backround.getBoundingBox();
 //    System.out.println(backgroundBounds.getHeight() + " " + backgroundBounds.getWidth());
 
@@ -72,56 +91,7 @@ public class Game {
       player.setSpeed(0);
     }
   }
-  private void handleCollisions() {
-    BoundingBox playerBounds = player.getBoundingBox();
-    // check background
-    checkLevelBounds(playerBounds);
 
-    if(!isTakenKey && playerBounds.intersects(key.getBoundingBox())){
-      player.addInventory(key);
-      isTakenKey = true;
-      System.out.println("Taken key");
-    }
-
-    // check with others objects
-    for (GameItem object : collidableObjects) {
-      if (object != player) {
-        checkObjectCollision(playerBounds, object.getBoundingBox());
-      }
-    }
-  }
-  private void checkObjectCollision(BoundingBox playerBounds, BoundingBox objectBounds) {
-    if (playerBounds.intersects(objectBounds)) {
-      // sides overlaping
-      double overlapLeft = playerBounds.getMaxX() - objectBounds.getMinX();
-      double overlapRight = objectBounds.getMaxX() - playerBounds.getMinX();
-      double overlapTop = playerBounds.getMaxY() - objectBounds.getMinY();
-      double overlapBottom = objectBounds.getMaxY() - playerBounds.getMinY();
-//      System.out.println("Left " + overlapLeft + " Right" + overlapRight);
-//      System.out.println("Top " + overlapTop + " Bottom" + overlapBottom);
-
-      // magic math
-      double minOverlap = Math.min(Math.min(overlapLeft, overlapRight),
-        Math.min(overlapTop, overlapBottom));
-
-      // act depending in side collision
-      if (minOverlap == overlapTop) {
-        // top
-        player.setY((int)(objectBounds.getMinY() - playerBounds.getHeight()));
-        player.setOnGround(true);
-      } else if (minOverlap == overlapBottom) {
-        // down
-        player.setY((int)objectBounds.getMaxY());
-        player.setSpeed(0);
-      } else if (minOverlap == overlapLeft) {
-        // left
-        player.setX((int)(objectBounds.getMinX() - playerBounds.getWidth()));
-      } else if (minOverlap == overlapRight) {
-        // right
-        player.setX((int)objectBounds.getMaxX());
-      }
-    }
-  }
   public void movePlayer(boolean up, boolean down, boolean left, boolean right, boolean jump) {
     player.move(up, down, left, right, jump);
   }
@@ -146,4 +116,7 @@ public class Game {
     return items.toArray(new DrawableItem[0]);
   }
 
+  public Player getPlayer() {
+    return player;
+  }
 }

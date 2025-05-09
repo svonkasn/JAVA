@@ -2,6 +2,7 @@ package cz.cvut.fel.pjv.dungeon_escape.model.environment;
 
 import cz.cvut.fel.pjv.dungeon_escape.model.GameItem;
 import cz.cvut.fel.pjv.dungeon_escape.model.ImageId;
+import cz.cvut.fel.pjv.dungeon_escape.model.entities.Player;
 
 public class Door extends GameItem {
   private boolean isLocked;
@@ -17,10 +18,14 @@ public class Door extends GameItem {
     return isLocked;
   }
 
-  public void useKey(){
-    /* TODO
-    *   ????
-    * */
+  public boolean tryOpen(Player player){
+      if (!isLocked) return true;
+
+      if(player.getInventory().hasKey()){
+        isLocked = false;
+        return true;
+      }
+    return false;
   }
 
   public String getDoorKey() {
