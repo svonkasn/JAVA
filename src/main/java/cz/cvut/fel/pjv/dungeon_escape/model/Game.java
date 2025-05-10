@@ -129,6 +129,5 @@ public class Game {
     // reset game
     player.resetPosition();
     isTakenKey = false;
-
   }
 }

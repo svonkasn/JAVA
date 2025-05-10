@@ -18,80 +18,60 @@ import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 
 public class MainMenu {
-  private final Scene mainMenuScene;
+  private  Scene menuScene;
+  private  Scene gameScene;
   private final Stage primaryStage;
-  private final Scene gameScene;
   private final Game game;
   private final GameController controller;
 
-  public MainMenu(Stage primaryStage, Scene gameScene, Game game, GameController controller) {
+  public MainMenu(Stage primaryStage, Game game, GameController controller) {
     this.primaryStage = primaryStage;
-    this.gameScene = gameScene;
     this.game = game;
     this.controller = controller;
-
+    createMenu();
+  }
+  public void setGameScene(Scene gameScene) {
+    this.gameScene = gameScene;
+  }
+  private void createMenu() {
     // Create elements in menu
     Label title = new Label("Dungeon Escape");
-    title.setFont(Font.font("Arial", FontWeight.BOLD, 40));
-    title.setTextFill(Color.WHEAT);
+    title.setStyle("-fx-font-size: 48px; -fx-text-fill: white;");
 
-    Button playGameButton = new Button("Continue Game");
-    playGameButton.setFont(Font.font(18));
-    playGameButton.setPrefWidth(200);
+    Button newGameButton = createNewButton("New Game", this::startNewGame);
+    Button continueGameButton = createNewButton("Continue Game", this::continueGame);
+    Button exitButton = createNewButton("Exit", Platform::exit);
+    continueGameButton.setDisable(controller.getState() !=GameState.GAME_OVER);
 
-    Button newGameButton = new Button("New Game");
-    newGameButton.setFont(Font.font(18));
-    newGameButton.setPrefWidth(200);
+    VBox menuBox = new VBox(title, newGameButton, continueGameButton, exitButton);
+    menuBox.setAlignment(Pos.CENTER);
 
-    Button exitButton = new Button("Exit");
-    exitButton.setFont(Font.font(18));
-    exitButton.setPrefWidth(200);
-
-    // action hadnler
-    playGameButton.setOnAction(event -> {
-      if (controller.getState() == GameState.PAUSED) {
-        controller.setState(GameState.RUNNING);
-        primaryStage.setScene(gameScene);
-      }
-    });
-
-    newGameButton.setOnAction(event -> {
-      game.reset(); // Метод для сброса состояния игры
-      controller.setState(GameState.RUNNING);
-      primaryStage.setScene(gameScene);
-    });
-
-    exitButton.setOnAction(event -> Platform.exit());
-
-    // Init box
-    VBox menuLayout = new VBox(20);
-    menuLayout.setAlignment(Pos.CENTER);
-    menuLayout.getChildren().addAll(
-      title,
-      playGameButton,
-      newGameButton,
-      exitButton
-    );
-
-    // Background menu
     StackPane root = new StackPane();
-    ImageView background = new ImageView(new Image("backround.jpg"));
-    root.getChildren().addAll(background, menuLayout);
+    root.setStyle("-fx-background-color: #222;");
+    root.getChildren().add(menuBox);
+    menuScene = new Scene(root, 1024, 800);
 
-    mainMenuScene = new Scene(root, 1024, 780);
+  }
 
-    // Styles
-    String buttonStyle = "-fx-background-color: #3a3a3a; -fx-text-fill: white; -fx-border-color: #5a5a5a;";
-    playGameButton.setStyle(buttonStyle);
-    newGameButton.setStyle(buttonStyle);
-    exitButton.setStyle(buttonStyle);
+  private Button createNewButton(String text, Runnable action) {
+    Button btn = new Button(text);
+    btn.setStyle("-fx-font-size: 24px; -fx-min-width: 200px;");
+    btn.setOnAction(e -> action.run());
+    return btn;
+  }
+  private void startNewGame() {
+    game.reset();
+    controller.setState(GameState.RUNNING);
+    primaryStage.setScene(gameScene);
+  }
+  private void continueGame() {
+    controller.setState(GameState.RUNNING);
+    primaryStage.setScene(gameScene);
   }
 
   public void show() {
-    primaryStage.setScene(mainMenuScene);
+    primaryStage.setScene(menuScene);
+    controller.setState(GameState.PAUSED);
   }
 
-  public Scene getScene() {
-    return mainMenuScene;
-  }
 }

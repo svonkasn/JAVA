@@ -14,26 +14,26 @@ public class GameController {
 
   public GameController(Game game) {
     this.game = game;
-//    this.inputHandler = inputHandler;
   }
 
   public void setInputHandler(InputHandler inputHandler) {
     this.inputHandler = inputHandler;
   }
 
-  public GameState getGameState() {
+  public GameState getState() {
     return state;
   }
-  public void setGameState(GameState gameState) {
+  public void setState(GameState gameState) {
     this.state = gameState;
+    game.setGameState(state);
   }
+
   public void update() {
     if(state == GameState.RUNNING  && inputHandler != null) {
       handleInput();
       game.updatePhysics();
       handleInteractions();
     }
-
   }
   private void handleInput() {
     game.movePlayer(
@@ -107,11 +107,6 @@ public class GameController {
     }
   }
 
-  public void setState(GameState gameState) {
-    this.state = gameState;
-    game.setGameState(state);
-  }
-  public GameState getState() {
-    return state;
-  }
+
+
 }

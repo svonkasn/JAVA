@@ -4,11 +4,9 @@ import javafx.scene.input.KeyEvent;
 
 public class InputHandler {
   private boolean up, down, left, right, jump;
-  private GameController gameController;
 
 
-  public InputHandler(Scene scene, GameController gameController) {
-    this.gameController = gameController;
+  public InputHandler(Scene scene) {
     scene.setOnKeyPressed(event -> handleInput(event, true));
     scene.setOnKeyReleased(event -> handleInput(event, false));
 
@@ -22,7 +20,6 @@ public class InputHandler {
       case D -> right = isPressed;
       case SPACE -> jump = isPressed;
     }
-
   }
   public boolean isUpPressed() { return up; }
   public boolean isDownPressed() { return down; }
