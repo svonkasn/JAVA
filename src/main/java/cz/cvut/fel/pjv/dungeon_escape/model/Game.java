@@ -23,6 +23,8 @@ public class Game {
   private final Key key;
   private final Door door;
 
+  private GameState gameState = GameState.RUNNING;
+
   private boolean isTakenKey = false;
 
   public Game() {
@@ -54,16 +56,16 @@ public class Game {
     isTakenKey = taken;
   }
   public void updatePhysics(){
-    player.update();
+    if(gameState == GameState.RUNNING){
+      player.update();
+
+    }
   }
   public Key getKey(){
     return key;
   }
   public Door getDoor(){
     return door;
-  }
-  public Inventory getInventory(){
-    return player.getInventory();
   }
 
 // Should be in GameController...?
@@ -73,10 +75,11 @@ public class Game {
 //    System.out.println(backgroundBounds.getHeight() + " " + backgroundBounds.getWidth());
 
     // check down
-    if (playerBounds.getMaxY() >= backgroundBounds.getMaxY()) {
-      System.out.println(playerBounds.getMaxY() + " " + backgroundBounds.getMaxY());
-      player.setY((backgroundBounds.getMaxY() - playerBounds.getHeight()));
-      player.setOnGround(true);
+    if (!player.isOnGround()) {
+      if (playerBounds.getMaxY() >= backgroundBounds.getMaxY()) {
+        player.setY(backgroundBounds.getMaxY() - playerBounds.getHeight());
+        player.setOnGround(true);
+      }
     }
 
     // check wall
@@ -92,7 +95,6 @@ public class Game {
       player.setSpeed(0);
     }
   }
-
   public void movePlayer(boolean up, boolean down, boolean left, boolean right, boolean jump) {
     player.move(up, down, left, right, jump);
   }
@@ -116,18 +118,19 @@ public class Game {
 
     return items.toArray(new DrawableItem[0]);
   }
-
   public Player getPlayer() {
     return player;
-  }
-
-  public void setGameState(GameState state) {
-
   }
 
   public void reset() {
     // reset game
     player.resetPosition();
     isTakenKey = false;
+//    player.getInventory().reset();
+
+  }
+
+  public void setGameState(GameState gameState) {
+    this.gameState = gameState;
   }
 }

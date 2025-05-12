@@ -3,8 +3,11 @@ package cz.cvut.fel.pjv.dungeon_escape.controller;
 import cz.cvut.fel.pjv.dungeon_escape.model.Game;
 import cz.cvut.fel.pjv.dungeon_escape.model.GameItem;
 import cz.cvut.fel.pjv.dungeon_escape.model.GameState;
+import cz.cvut.fel.pjv.dungeon_escape.model.GameStateData;
 import cz.cvut.fel.pjv.dungeon_escape.model.entities.Player;
 import javafx.geometry.BoundingBox;
+
+import java.io.*;
 
 
 public class GameController {
@@ -12,9 +15,12 @@ public class GameController {
   private InputHandler inputHandler;
   private GameState state = GameState.RUNNING;
 
+  private static final String SAVE_FILE = "game_save.ser";
+
   public GameController(Game game) {
     this.game = game;
   }
+
 
   public void setInputHandler(InputHandler inputHandler) {
     this.inputHandler = inputHandler;
@@ -93,6 +99,7 @@ public class GameController {
         // top
         player.setY((int)(objectBounds.getMinY() - playerBounds.getHeight()));
         player.setOnGround(true);
+        player.setSpeed(0);
       } else if (minOverlap == overlapBottom) {
         // down
         player.setY((int)objectBounds.getMaxY());
@@ -107,6 +114,41 @@ public class GameController {
     }
   }
 
+  public void saveGame() {
+    try (ObjectOutputStream oos = new ObjectOutputStream(
+      new FileOutputStream(SAVE_FILE))) {
+      oos.writeObject(new GameStateData(game.getPlayer(), game));
+      System.out.println("Game saved successfully");
+    } catch (IOException e) {
+      System.err.println("Failed to save game: " + e.getMessage());
+    }
 
+  }
+  public boolean loadGame() {
+    File saveFile = new File(SAVE_FILE);
+    if (!saveFile.exists()) return false;
 
+    try (ObjectInputStream ois = new ObjectInputStream(
+      new FileInputStream(SAVE_FILE))) {
+      GameStateData savedState = (GameStateData) ois.readObject();
+
+      Player player = game.getPlayer();
+      player.setX(savedState.getPlayerX());
+      player.setY(savedState.getPlayerY());
+      game.setKeyTaken(savedState.isKeyTaken());
+
+      System.out.println("Game loaded successfully");
+      return true;
+    } catch (IOException | ClassNotFoundException e) {
+      System.err.println("Failed to load game: " + e.getMessage());
+      return false;
+    }
+  }
+  public boolean hasSavedGame() {
+    return new File(SAVE_FILE).exists();
+  }
+
+  public void setGame(Game newGame) {
+    this.game = newGame;
+  }
 }

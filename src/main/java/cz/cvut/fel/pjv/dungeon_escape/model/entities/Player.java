@@ -32,12 +32,9 @@ public class Player extends GameItem {
 
 
   public void move(boolean up, boolean down, boolean left, boolean right, boolean jump) {
-    double moveSpeed = 8.0;
+    double moveSpeed = 4.0;
     if (left) x -= moveSpeed;
     if (right) x += moveSpeed;
-
-    if (up) y -= moveSpeed;
-    if (down) y += moveSpeed;
 
     if (jump && isOnGround) {
       speed = -8.5;
@@ -67,6 +64,10 @@ public class Player extends GameItem {
     isOnGround = onGround;
   }
 
+  public boolean isOnGround() {
+    return isOnGround;
+  }
+
   public int getHealth() {
     return health;
   }
@@ -80,7 +81,10 @@ public class Player extends GameItem {
   }
 
   public void resetPosition() {
-    setX(0);
-    setY(0);
+    this.x = 0;
+    this.y = 0;
+    this.speed = 0;
+    this.isOnGround = false;
+    this.inventory = new Inventory();
   }
 }

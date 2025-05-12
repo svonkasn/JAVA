@@ -1,6 +1,7 @@
 package cz.cvut.fel.pjv.dungeon_escape.view;
 
 import cz.cvut.fel.pjv.dungeon_escape.controller.GameController;
+import cz.cvut.fel.pjv.dungeon_escape.controller.InputHandler;
 import cz.cvut.fel.pjv.dungeon_escape.model.Game;
 import cz.cvut.fel.pjv.dungeon_escape.model.GameState;
 import javafx.application.Platform;
@@ -21,7 +22,7 @@ public class MainMenu {
   private  Scene menuScene;
   private  Scene gameScene;
   private final Stage primaryStage;
-  private final Game game;
+  private Game game;
   private final GameController controller;
 
   public MainMenu(Stage primaryStage, Game game, GameController controller) {
@@ -41,7 +42,7 @@ public class MainMenu {
     Button newGameButton = createNewButton("New Game", this::startNewGame);
     Button continueGameButton = createNewButton("Continue Game", this::continueGame);
     Button exitButton = createNewButton("Exit", Platform::exit);
-    continueGameButton.setDisable(controller.getState() !=GameState.GAME_OVER);
+    continueGameButton.setDisable(controller.getState() == GameState.GAME_OVER);
 
     VBox menuBox = new VBox(title, newGameButton, continueGameButton, exitButton);
     menuBox.setAlignment(Pos.CENTER);
@@ -53,20 +54,27 @@ public class MainMenu {
 
   }
 
+
+
   private Button createNewButton(String text, Runnable action) {
     Button btn = new Button(text);
     btn.setStyle("-fx-font-size: 24px; -fx-min-width: 200px;");
     btn.setOnAction(e -> action.run());
     return btn;
   }
+
   private void startNewGame() {
     game.reset();
+    game = new Game();
     controller.setState(GameState.RUNNING);
     primaryStage.setScene(gameScene);
   }
+
   private void continueGame() {
-    controller.setState(GameState.RUNNING);
-    primaryStage.setScene(gameScene);
+    if(controller.loadGame()){
+      controller.setState(GameState.RUNNING);
+      primaryStage.setScene(gameScene);
+    }
   }
 
   public void show() {

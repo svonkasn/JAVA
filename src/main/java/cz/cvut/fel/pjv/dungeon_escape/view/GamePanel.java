@@ -36,7 +36,7 @@ public class GamePanel extends Application {
 
     createGameScene();
 
-    mainMenu = new MainMenu(stage, game, controller);
+    mainMenu = new MainMenu(stage,game, controller);
     mainMenu.show();
 
     Scene gameScene = createGameScene();
@@ -50,6 +50,7 @@ public class GamePanel extends Application {
     stage.show();
 
   }
+
   private Scene createGameScene() {
     double sceneWidth = ImageId.BGR.getWidth();
     double sceneHeight = ImageId.BGR.getHeight();
@@ -63,6 +64,8 @@ public class GamePanel extends Application {
       if (event.getCode() == KeyCode.ESCAPE) {
         if (controller.getState() == GameState.RUNNING) {
           controller.setState(GameState.PAUSED);
+          controller.saveGame();
+//          mainMenu.up
           mainMenu.show();
         }
         event.consume(); // Stop
@@ -80,7 +83,6 @@ public class GamePanel extends Application {
       gameImages.put(imgId, image);
     }
   }
-
   private void drawItems(Canvas canvas, Game game) {
     GraphicsContext gc = canvas.getGraphicsContext2D();
 
