@@ -3,8 +3,7 @@ package cz.cvut.fel.pjv.dungeon_escape.model;
 import cz.cvut.fel.pjv.dungeon_escape.model.entities.Player;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
+
 
 public class GameStateData implements Serializable {
   private double playerX;

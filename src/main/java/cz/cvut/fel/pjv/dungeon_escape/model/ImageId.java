@@ -7,7 +7,8 @@ public enum ImageId {
   GROUND("ground.png"),
   INVENTORY("dialogues2.png"),
   KEY("key.png"),
-  DOOR("door.png"),;
+  DOOR("door.png"),
+  SLIME("slime.png");
 
 
   private final String fileName;

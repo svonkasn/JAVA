@@ -15,6 +15,8 @@ import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.StackPane;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
 import java.util.EnumMap;
@@ -90,6 +92,25 @@ public class GamePanel extends Application {
       gc.drawImage(gameImages.get(di.imageId()), di.x(), di.y());
 
   }
+  private void drawHealth(GraphicsContext gc) {
+    double maxHealth = 10;
+    double currentHealth = controller.getPlayerHealth();
+    double barWidth = 200;
+    double barHeight = 20;
+    double x = 380;
+    double y = 20;
+
+    // draw box
+    gc.setStroke(Color.BLACK);
+    gc.strokeRect(x, y, barWidth, barHeight);
+
+    // current health
+    double healthRatio = currentHealth / maxHealth;
+    gc.setFill(Color.LIGHTGREEN);
+    if (healthRatio < 0.3)
+      gc.setFill(Color.RED);
+    gc.fillRect(x, y, barWidth * healthRatio, barHeight);
+  }
 
 
   private void startGameLoop(Canvas canvas, Game game, GameController controller) {
@@ -99,6 +120,7 @@ public class GamePanel extends Application {
         if (controller.getState() == GameState.RUNNING) {
           controller.update();
           drawItems(canvas, game);
+          drawHealth(canvas.getGraphicsContext2D());
         }
       }
     };

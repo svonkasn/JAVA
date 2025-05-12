@@ -8,11 +8,11 @@ public class Slime extends Enemy {
     super(imageId, x, y);
   }
   @Override
-  public void attack(){
-    // TODO
+  public void attack(Player player) {
+    super.attack(player);
   }
   @Override
-  public void takeDamage(int damage) {
+  public void takeDamage(double damage) {
     // TODO
   }
 }

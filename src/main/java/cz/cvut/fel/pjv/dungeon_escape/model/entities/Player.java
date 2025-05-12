@@ -6,10 +6,9 @@ import cz.cvut.fel.pjv.dungeon_escape.model.Inventory;
 
 public class Player extends GameItem {
   private final double gravity;
-  private int health;
+  private double health;
   private double speed;
   private boolean isOnGround;
-
   private Inventory inventory;
 
 
@@ -31,7 +30,7 @@ public class Player extends GameItem {
   }
 
 
-  public void move(boolean up, boolean down, boolean left, boolean right, boolean jump) {
+  public void move(boolean left, boolean right, boolean jump) {
     double moveSpeed = 4.0;
     if (left) x -= moveSpeed;
     if (right) x += moveSpeed;
@@ -56,9 +55,6 @@ public class Player extends GameItem {
     this.speed = speed;
   }
 
-  public double getSpeed() {
-    return speed;
-  }
 
   public void setOnGround(boolean onGround) {
     isOnGround = onGround;
@@ -68,8 +64,12 @@ public class Player extends GameItem {
     return isOnGround;
   }
 
-  public int getHealth() {
+  public double getHealth() {
     return health;
+  }
+
+  public void getDamage(double damage) {
+    health -= damage;
   }
 
   public void heal(int heal) {

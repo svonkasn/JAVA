@@ -1,6 +1,7 @@
 package cz.cvut.fel.pjv.dungeon_escape.model;
 
 import cz.cvut.fel.pjv.dungeon_escape.model.entities.Player;
+import cz.cvut.fel.pjv.dungeon_escape.model.entities.Slime;
 import cz.cvut.fel.pjv.dungeon_escape.model.environment.Door;
 import cz.cvut.fel.pjv.dungeon_escape.model.items.Key;
 import javafx.geometry.BoundingBox;
@@ -22,6 +23,7 @@ public class Game {
   private final GameItem inventory;
   private final Key key;
   private final Door door;
+  private final Slime slime;
 
   private GameState gameState = GameState.RUNNING;
 
@@ -35,17 +37,28 @@ public class Game {
     inventory = new GameItem(ImageId.INVENTORY, 0,0);
     key = new Key(ImageId.KEY, 900,650,"key1");
     door = new Door(ImageId.DOOR, 900, 65);
+    slime = new Slime(ImageId.SLIME, 800, 650 );
 
     addCollidableObject(platform2);
     addCollidableObject(platform);
     addCollidableObject(ground);
+    addCollidableObject(slime);
 
-    player = new Player(ImageId.PLAYER,0, 0, 0, gravity);
+    player = new Player(ImageId.PLAYER,0, 0, 10, gravity);
   }
 
   public void addCollidableObject(GameItem gameItem){
     collidableObjects.add(gameItem);
   }
+
+//  public boolean get(){
+//    if(player.getHealth() == 0 && state == GameState.RUNNING){
+//      setState(GameState.GAME_OVER);
+//      return true;
+//    }
+//    return false;
+//  }
+
   public List<GameItem> getCollidableObjects(){
     return collidableObjects;
   }
@@ -68,7 +81,12 @@ public class Game {
     return door;
   }
 
-// Should be in GameController...?
+  public Slime getSlime() {
+    return slime;
+  }
+
+
+  // Should be in GameController...?
   public void checkLevelBounds(){
     BoundingBox playerBounds = player.getBoundingBox();
     BoundingBox backgroundBounds = backround.getBoundingBox();
@@ -95,8 +113,8 @@ public class Game {
       player.setSpeed(0);
     }
   }
-  public void movePlayer(boolean up, boolean down, boolean left, boolean right, boolean jump) {
-    player.move(up, down, left, right, jump);
+  public void movePlayer(boolean left, boolean right, boolean jump) {
+    player.move(left, right, jump);
   }
   public DrawableItem[] getItemsToDraw() {
     List<DrawableItem> items = new ArrayList<>(Arrays.asList(
@@ -106,7 +124,8 @@ public class Game {
       new DrawableItem(platform2.getImageId(), platform2.getX(), platform2.getY()),
       new DrawableItem(door.getImageId(), door.getX(), door.getY()),
       new DrawableItem(ground.getImageId(), ground.getX(), ground.getY()),
-      new DrawableItem(player.getImageId(), player.getX(), player.getY())
+      new DrawableItem(player.getImageId(), player.getX(), player.getY()),
+      new DrawableItem(slime.getImageId(), slime.getX(), slime.getY())
     ));
 
     for (GameItem item : player.getInventory().getItems()) {

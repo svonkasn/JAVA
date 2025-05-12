@@ -8,11 +8,11 @@ public class Monster extends Enemy {
     super(imageId, x, y);
   }
   @Override
-  public void attack(){
+  public void attack(Player player) {
     // TODO
   }
   @Override
-  public void takeDamage(int damage) {
+  public void takeDamage(double damage) {
     // TODO
   }
 }

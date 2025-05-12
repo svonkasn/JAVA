@@ -33,7 +33,10 @@ public class GameController {
     this.state = gameState;
     game.setGameState(state);
   }
-
+  public double getPlayerHealth(){
+    Player player = game.getPlayer();
+    return player.getHealth();
+  }
   public void update() {
     if(state == GameState.RUNNING  && inputHandler != null) {
       handleInput();
@@ -43,8 +46,6 @@ public class GameController {
   }
   private void handleInput() {
     game.movePlayer(
-      inputHandler.isUpPressed(),
-      inputHandler.isDownPressed(),
       inputHandler.isLeftPressed(),
       inputHandler.isRightPressed(),
       inputHandler.isJumpPressed()
@@ -59,12 +60,18 @@ public class GameController {
     for (GameItem object : game.getCollidableObjects()) {
       checkObjectCollision(player, object);
     }
+//    check health. should not be there
+    if(player.getHealth() == 0 && state == GameState.RUNNING){
+      setState(GameState.GAME_OVER);
+    }
+
 
     if (!game.isKeyTaken() && playerBounds.intersects(game.getKey().getBoundingBox())) {
       player.addInventory(game.getKey());
       game.setKeyTaken(true);
       System.out.println("Taken key");
     }
+
     if (playerBounds.intersects(game.getDoor().getBoundingBox())) {
       if (game.getDoor().tryOpen(player)) {
         if (player.getInventory().hasKey()) {
@@ -75,7 +82,12 @@ public class GameController {
         }
       }
     }
+    if (playerBounds.intersects(game.getSlime().getBoundingBox())) {
+      game.getSlime().attack(player);
+    }
+
   }
+
 
   private void checkObjectCollision(Player player, GameItem object) {
     BoundingBox playerBounds = player.getBoundingBox();
