@@ -2,13 +2,15 @@ package cz.cvut.fel.pjv.dungeon_escape.model.entities;
 
 import cz.cvut.fel.pjv.dungeon_escape.model.GameItem;
 import cz.cvut.fel.pjv.dungeon_escape.model.ImageId;
+import javafx.scene.image.Image;
 
 public class Enemy extends GameItem {
   private double health;
   private long lastAttackTime = 0;
-  protected final long attackCooldown = 1_000_000_000;
+  private final long attackCooldown = 1_000_000_000;
   public Enemy(ImageId imageId, double x, double y) {
     super(imageId, x, y);
+
   }
 
   public boolean canAttack() {
@@ -20,8 +22,8 @@ public class Enemy extends GameItem {
       lastAttackTime = System.nanoTime();
     }
   }
-
   public void takeDamage(double damage) {
      health -= damage;
   }
+
 }

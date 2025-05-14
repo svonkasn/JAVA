@@ -14,6 +14,7 @@ public class GameController {
   private Game game;
   private InputHandler inputHandler;
   private GameState state = GameState.RUNNING;
+  private boolean wasInventoryToggled = false;
 
   private static final String SAVE_FILE = "game_save.ser";
 
@@ -38,6 +39,12 @@ public class GameController {
     return player.getHealth();
   }
   public void update() {
+    if (inputHandler.shouldToggleInventory() && !wasInventoryToggled) {
+      game.toggleInventory();
+      wasInventoryToggled = true;
+    } else if (!inputHandler.shouldToggleInventory()) {
+      wasInventoryToggled = false;
+    }
     if(state == GameState.RUNNING  && inputHandler != null) {
       handleInput();
       game.updatePhysics();
@@ -160,7 +167,4 @@ public class GameController {
     return new File(SAVE_FILE).exists();
   }
 
-  public void setGame(Game newGame) {
-    this.game = newGame;
-  }
 }

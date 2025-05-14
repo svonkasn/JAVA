@@ -6,12 +6,15 @@ import cz.cvut.fel.pjv.dungeon_escape.model.DrawableItem;
 import cz.cvut.fel.pjv.dungeon_escape.model.Game;
 import cz.cvut.fel.pjv.dungeon_escape.model.GameState;
 import cz.cvut.fel.pjv.dungeon_escape.model.ImageId;
+import cz.cvut.fel.pjv.dungeon_escape.model.entities.Enemy;
+import cz.cvut.fel.pjv.dungeon_escape.model.entities.Monster;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
+import javafx.scene.image.WritableImage;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.StackPane;
@@ -78,6 +81,7 @@ public class GamePanel extends Application {
     return gameScene;
   }
   private void loadImages() {
+
     for (ImageId imgId : ImageId.values()) {
       Image image = new Image(imgId.getFileName());
       imgId.setWidth(image.getWidth());
@@ -92,6 +96,7 @@ public class GamePanel extends Application {
       gc.drawImage(gameImages.get(di.imageId()), di.x(), di.y());
 
   }
+
   private void drawHealth(GraphicsContext gc) {
     double maxHealth = 10;
     double currentHealth = controller.getPlayerHealth();

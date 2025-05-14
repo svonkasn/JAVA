@@ -1,22 +1,36 @@
 package cz.cvut.fel.pjv.dungeon_escape.model;
 
+import javafx.scene.image.Image;
+import javafx.scene.image.PixelReader;
+
 public enum ImageId {
   BGR("background.png"),
-  PLAYER("player1.png"),
+  PLAYER("player2.png"),
   PLATFORM("platrform1.png"),
   GROUND("ground.png"),
   INVENTORY("dialogues2.png"),
   KEY("key.png"),
   DOOR("door.png"),
-  SLIME("slime.png");
+  SLIME("slime.png"),
+  MONSTER("crow.png");
 
 
   private final String fileName;
+  private final Image image;
   private double width;
   private double height;
 
   ImageId(String fileName) {
     this.fileName = fileName;
+    this.image = new Image(getClass().getResourceAsStream("/" + fileName));
+  }
+
+  public Image getImage() {
+    return image;
+  }
+
+  public PixelReader getPixelReader() {
+    return image.getPixelReader();
   }
 
   public String getFileName() {
@@ -38,5 +52,6 @@ public enum ImageId {
   public void setHeight(double height) {
     this.height = height;
   }
+
 }
 
