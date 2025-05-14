@@ -1,59 +1,47 @@
 package cz.cvut.fel.pjv.dungeon_escape.controller;
+import cz.cvut.fel.pjv.dungeon_escape.model.Game;
+import javafx.scene.Scene;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 
-import cz.cvut.fel.pjv.dungeon_escape.model.Player;
+public class InputHandler {
+  private boolean left, right, jump, inventoryKeyPressed;
+  private boolean inventoryToggleProcessed;
 
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
 
-public class InputHandler extends KeyAdapter {
-//  private Player player;
-//  private int dx = 0, dy = 0;
-  public boolean upPressed;
-  public boolean downPressed;
-  public boolean leftPressed;
-  public boolean rightPressed;
 
-//  public InputHandler(Player player) {
-//    this.player = player;
-//  }
+  public InputHandler(Scene scene) {
+    scene.setOnKeyPressed(event -> {
+      if (event.getCode() == KeyCode.Q && !inventoryToggleProcessed) {
+        inventoryKeyPressed = true;
+        inventoryToggleProcessed = true;
+      }
+      handleInput(event, true);
+    });
 
-  public void keyPressed(KeyEvent e) {
-    int code = e.getKeyCode();
-    if (code == KeyEvent.VK_W)
-      upPressed = true;
-    if (code == KeyEvent.VK_S)
-      downPressed = true;
-    if (code == KeyEvent.VK_D)
-      leftPressed = true;
-    if(code == KeyEvent.VK_A)
-      rightPressed = true;
+    scene.setOnKeyReleased(event -> {
+      if (event.getCode() == KeyCode.Q) {
+        inventoryKeyPressed = false;
+        inventoryToggleProcessed = false;
+      }
+      handleInput(event, false);
+    });
+//    scene.setOnKeyPressed(event -> handleInput(event, true));
+//    scene.setOnKeyReleased(event -> handleInput(event, false));
+
+  }
+
+  private void handleInput(KeyEvent event, boolean isPressed) {
+    switch (event.getCode()) {
+      case A -> left = isPressed;
+      case D -> right = isPressed;
+      case SPACE -> jump = isPressed;
     }
-
-  public void keyRelease(KeyEvent e) {
-    int code = e.getKeyCode();
-    if (code == KeyEvent.VK_W)
-      upPressed = false;
-    if (code == KeyEvent.VK_S)
-      downPressed = false;
-    if (code == KeyEvent.VK_D)
-      leftPressed = false;
-    if(code == KeyEvent.VK_A)
-      rightPressed = false;
   }
 
-
-//    switch (e.getKeyCode()) {
-//      case KeyEvent.VK_UP:
-//        player.move(0, -1);
-//        break;
-//      case KeyEvent.VK_DOWN:
-//        player.move(0, 1);
-//        break;
-//      case KeyEvent.VK_LEFT:
-//        player.move(-1, 0);
-//        break;
-//    }
-  }
-
-
-
+  public boolean isLeftPressed() { return left; }
+  public boolean isRightPressed() { return right; }
+  public boolean isJumpPressed() { return jump; }
+  public boolean shouldToggleInventory() {
+    return inventoryKeyPressed;
+  }}

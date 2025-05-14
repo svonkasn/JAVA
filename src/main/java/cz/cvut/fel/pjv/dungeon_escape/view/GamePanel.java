@@ -1,90 +1,135 @@
 package cz.cvut.fel.pjv.dungeon_escape.view;
 
+import cz.cvut.fel.pjv.dungeon_escape.controller.GameController;
 import cz.cvut.fel.pjv.dungeon_escape.controller.InputHandler;
-import cz.cvut.fel.pjv.dungeon_escape.model.Player;
+import cz.cvut.fel.pjv.dungeon_escape.model.DrawableItem;
+import cz.cvut.fel.pjv.dungeon_escape.model.Game;
+import cz.cvut.fel.pjv.dungeon_escape.model.GameState;
+import cz.cvut.fel.pjv.dungeon_escape.model.ImageId;
+import cz.cvut.fel.pjv.dungeon_escape.model.entities.Enemy;
+import cz.cvut.fel.pjv.dungeon_escape.model.entities.Monster;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
+import javafx.scene.image.WritableImage;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.StackPane;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
+import java.util.EnumMap;
+import java.util.Map;
 
 
 public class GamePanel extends Application {
-  private final Image backgroundImage = new Image("backround.jpg");
-
-  private final double width = backgroundImage.getWidth();
-  private final double height = backgroundImage.getHeight();
-
-  private final Canvas canvas = new Canvas(width, height);
-  private GraphicsContext gc;
-
-  InputHandler keyH = new InputHandler();
-
-  private double playerX = 100; // Pozice hráče
-  private double playerY = 100;
-  private double speed = 2.0; // Rychlost pohybu
-
+  Map<ImageId, Image> gameImages = new EnumMap<>(ImageId.class);
+  private MainMenu mainMenu;
+  private GameController controller;
+  private Game game;
 
   @Override
   public void start(Stage stage){
-    gc = canvas.getGraphicsContext2D();
-    StackPane root = new StackPane(canvas);
+    loadImages();
+// Init model and controller
+    game = new Game();
+    controller = new GameController(game);
 
-//    player = new Player(10,10,10);
-//    inputHandler = new InputHandler(player);
-//    root.setOnKeyPressed(inputHandler::keyPressed);
-//    root.setOnKeyReleased(inputHandler::keyReleased);
+    createGameScene();
 
+    mainMenu = new MainMenu(stage,game, controller);
+    mainMenu.show();
 
+    Scene gameScene = createGameScene();
 
+    // Set inputHandler
+    InputHandler inputHandler = new InputHandler(gameScene);
+    controller.setInputHandler(inputHandler);
 
-
-    startGameLoop();
-
-    Scene scene = new Scene(root, width, height);
-    stage.setTitle("Preview");
-    stage.setScene(scene);
+    mainMenu.setGameScene(gameScene);
+    stage.setTitle("Dungeon Escape");
     stage.show();
-    startGameLoop();
 
   }
 
-  private void draw() {
-    gc.clearRect(0, 0, width, height);
-    gc.drawImage(backgroundImage, 0, 0);
-    gc.fillRect(playerX, playerY, 30, 30); // Černý čtverec jako hráč
+  private Scene createGameScene() {
+    double sceneWidth = ImageId.BGR.getWidth();
+    double sceneHeight = ImageId.BGR.getHeight();
+
+    Canvas canvas = new Canvas(sceneWidth, sceneHeight);
+    StackPane root = new StackPane(canvas);
+    Scene gameScene = new Scene(root, sceneWidth, sceneHeight);
+
+    // ESC input
+    gameScene.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
+      if (event.getCode() == KeyCode.ESCAPE) {
+        if (controller.getState() == GameState.RUNNING) {
+          controller.setState(GameState.PAUSED);
+          controller.saveGame();
+//          mainMenu.up
+          mainMenu.show();
+        }
+        event.consume(); // Stop
+      }
+    });
+
+    startGameLoop(canvas, game, controller);
+    return gameScene;
   }
-  private void update() {
-    if (keyH.upPressed){
-      playerY -= speed;
-    } else if (keyH.downPressed) {
-      playerY += speed;
-    } else if (keyH.leftPressed) {
-      playerX -= speed;
-    } else if (keyH.rightPressed) {
-      playerX += speed;
+  private void loadImages() {
+
+    for (ImageId imgId : ImageId.values()) {
+      Image image = new Image(imgId.getFileName());
+      imgId.setWidth(image.getWidth());
+      imgId.setHeight(image.getHeight());
+      gameImages.put(imgId, image);
     }
-//    player.move(dx, dy);
-//    playerX += speed;
-//    if (playerX > width) playerX = 0;
+  }
+  private void drawItems(Canvas canvas, Game game) {
+    GraphicsContext gc = canvas.getGraphicsContext2D();
+
+    for (DrawableItem di : game.getItemsToDraw())
+      gc.drawImage(gameImages.get(di.imageId()), di.x(), di.y());
+
   }
 
-  private void startGameLoop() {
+  private void drawHealth(GraphicsContext gc) {
+    double maxHealth = 10;
+    double currentHealth = controller.getPlayerHealth();
+    double barWidth = 200;
+    double barHeight = 20;
+    double x = 380;
+    double y = 20;
+
+    // draw box
+    gc.setStroke(Color.BLACK);
+    gc.strokeRect(x, y, barWidth, barHeight);
+
+    // current health
+    double healthRatio = currentHealth / maxHealth;
+    gc.setFill(Color.LIGHTGREEN);
+    if (healthRatio < 0.3)
+      gc.setFill(Color.RED);
+    gc.fillRect(x, y, barWidth * healthRatio, barHeight);
+  }
+
+
+  private void startGameLoop(Canvas canvas, Game game, GameController controller) {
     AnimationTimer gameLoop = new AnimationTimer() {
       @Override
       public void handle(long now) {
-        update();
-        draw();
+        if (controller.getState() == GameState.RUNNING) {
+          controller.update();
+          drawItems(canvas, game);
+          drawHealth(canvas.getGraphicsContext2D());
+        }
       }
     };
     gameLoop.start();
   }
 
-  public static void main(String[] args) {
-    launch();
-  }
 }
