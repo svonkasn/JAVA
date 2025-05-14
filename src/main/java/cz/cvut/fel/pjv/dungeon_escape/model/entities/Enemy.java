@@ -10,7 +10,6 @@ public class Enemy extends GameItem {
   private final long attackCooldown = 1_000_000_000;
   public Enemy(ImageId imageId, double x, double y) {
     super(imageId, x, y);
-
   }
 
   public boolean canAttack() {
@@ -20,10 +19,11 @@ public class Enemy extends GameItem {
     if (canAttack()) {
       player.getDamage(1);
       lastAttackTime = System.nanoTime();
+      System.out.println("Damage");
     }
   }
   public void takeDamage(double damage) {
      health -= damage;
   }
-
+  public void update(Player player) {}
 }

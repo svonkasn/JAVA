@@ -44,7 +44,7 @@ public class Game {
     key = new Key(ImageId.KEY, 900,650,"key1");
     door = new Door(ImageId.DOOR, 900, 65);
     slime = new Slime(ImageId.SLIME, 800, 650 );
-    monster = new Monster(ImageId.MONSTER, 100, 650);
+    monster = new Monster(ImageId.MONSTER, 100, 600);
 
     addCollidableObject(platform2);
     addCollidableObject(platform);
@@ -68,7 +68,7 @@ public class Game {
   public void updatePhysics(){
     if(gameState == GameState.RUNNING){
       player.update();
-
+      monster.update(player);
     }
   }
   // Should be in GameController...?
