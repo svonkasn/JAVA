@@ -10,10 +10,7 @@ public class Monster extends Enemy {
   private double speed = 1.0;
   private boolean movingRight = true;
 
-  private boolean isAggro = false;
-  private long aggroStartTime = 0;
-  private double visionRange = 150;
-  private final long aggroDuration = 3_000_000_000L;
+
 
   public Monster(ImageId imageId, double x, double y) {
     super(imageId, x, y);
@@ -24,12 +21,21 @@ public class Monster extends Enemy {
   @Override
   public void update(Player player){
     double playerX = player.getX();
-    double distanceToPlayer = Math.abs(playerX - getX());
-    patrol();
+    double playerY = player.getY();
+    double distanceX = Math.abs(playerX - getX());
+    double distanceY = Math.abs(playerY - getY());
 
-    if (distanceToPlayer <= 30) {
+    if (distanceX <= 120 && distanceY <= 70) {
       attack(player);
+      attackDirection = (playerX > getX()) ? 1 : -1;
+      System.out.println("Damage");
+    } else
+      patrol();
+
+    if (System.currentTimeMillis() - attackStartTime > 1000) {
+      isAttacking = false;
     }
+
   }
   private void patrol() {
     if (movingRight) {
@@ -44,4 +50,5 @@ public class Monster extends Enemy {
       }
     }
   }
+
 }

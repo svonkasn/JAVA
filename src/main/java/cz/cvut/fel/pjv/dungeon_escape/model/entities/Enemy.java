@@ -6,8 +6,11 @@ import javafx.scene.image.Image;
 
 public class Enemy extends GameItem {
   private double health;
-  private long lastAttackTime = 0;
-  private final long attackCooldown = 1_000_000_000;
+  protected long lastAttackTime = 0;
+  protected final long attackCooldown = 1_000_000_000;
+  protected boolean isAttacking = false;
+  protected long attackStartTime = 0;
+  protected int attackDirection = 1;
   public Enemy(ImageId imageId, double x, double y) {
     super(imageId, x, y);
   }
@@ -19,11 +22,22 @@ public class Enemy extends GameItem {
     if (canAttack()) {
       player.getDamage(1);
       lastAttackTime = System.nanoTime();
-      System.out.println("Damage");
+      isAttacking = true;
+      attackStartTime = System.currentTimeMillis();
     }
+
   }
   public void takeDamage(double damage) {
      health -= damage;
   }
   public void update(Player player) {}
+  public boolean isAttacking() {
+    return isAttacking;
+  }
+  public long getAttackStartTime() {
+    return attackStartTime;
+  }
+  public int getAttackDirection() {
+    return attackDirection;
+  }
 }

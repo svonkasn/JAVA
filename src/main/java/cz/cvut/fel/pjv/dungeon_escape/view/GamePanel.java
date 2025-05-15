@@ -56,6 +56,49 @@ public class GamePanel extends Application {
 
   }
 
+  private void drawMonsterAttackEffect(GraphicsContext gc, Enemy monster) {
+    if (!monster.isAttacking()) return;
+
+    long attackDuration = System.currentTimeMillis() - monster.getAttackStartTime();
+    double progress = Math.min(1.0, attackDuration / 1000.0); // normalize time attack (0-1)
+    double alpha = 1.0 - progress * 0.8; //
+
+    // X, Y center of monster
+    double centerX = monster.getX() + ImageId.MONSTER.getWidth() / 2;
+    double centerY = monster.getY() + ImageId.MONSTER.getHeight() / 2;
+
+    // Triangle
+    gc.setFill(new Color(1, 0, 0, alpha));
+
+    if (monster.getAttackDirection() > 0) {
+      // to the Right attack
+      gc.fillPolygon(
+        new double[]{centerX + 30, centerX + 50, centerX + 30},
+        new double[]{centerY - 10, centerY, centerY + 10},
+        3
+      );
+    } else {
+      // to the Left
+      gc.fillPolygon(
+        new double[]{centerX - 30, centerX - 50, centerX - 30},
+        new double[]{centerY - 10, centerY, centerY + 10},
+        3
+      );
+    }
+
+    // effect "wave" (gradually expanding)
+    if (attackDuration < 500) {
+      double waveSize = attackDuration / 500.0 * 40;
+      gc.setStroke(new Color(1, 0.5, 0.5, alpha * 0.7));
+      gc.setLineWidth(2);
+      gc.strokeOval(
+        centerX - waveSize/2,
+        centerY - waveSize/2,
+        waveSize,
+        waveSize
+      );
+    }
+  }
   private Scene createGameScene() {
     double sceneWidth = ImageId.BGR.getWidth();
     double sceneHeight = ImageId.BGR.getHeight();
@@ -95,6 +138,10 @@ public class GamePanel extends Application {
     for (DrawableItem di : game.getItemsToDraw())
       gc.drawImage(gameImages.get(di.imageId()), di.x(), di.y());
 
+
+    if (game.getMonster().isAttacking()) {
+      drawMonsterAttackEffect(gc, game.getMonster());
+    }
   }
 
   private void drawHealth(GraphicsContext gc) {

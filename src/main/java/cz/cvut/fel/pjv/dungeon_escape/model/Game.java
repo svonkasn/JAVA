@@ -126,7 +126,6 @@ public class Game {
     return items.toArray(new DrawableItem[0]);
   }
   public void reset() {
-    // reset game
     player.resetPosition();
     isTakenKey = false;
   }
@@ -152,7 +151,9 @@ public class Game {
 
   public void toggleInventory() {
     isInventoryOpen = !isInventoryOpen;
-//    System.out.println(isInventoryOpen);
+  }
 
+  public Enemy getMonster() {
+    return monster;
   }
 }
