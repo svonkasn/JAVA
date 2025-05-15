@@ -5,6 +5,7 @@ import cz.cvut.fel.pjv.dungeon_escape.model.entities.Monster;
 import cz.cvut.fel.pjv.dungeon_escape.model.entities.Player;
 import cz.cvut.fel.pjv.dungeon_escape.model.entities.Slime;
 import cz.cvut.fel.pjv.dungeon_escape.model.environment.Door;
+import cz.cvut.fel.pjv.dungeon_escape.model.environment.Plants;
 import cz.cvut.fel.pjv.dungeon_escape.model.items.Key;
 import javafx.geometry.BoundingBox;
 import javafx.geometry.Bounds;
@@ -29,6 +30,9 @@ public class Game {
   private final Door door;
   private final Slime slime;
   private final Enemy monster;
+  private final Plants plant1;
+  private final Plants plant2;
+  private final Plants plant3;
 
   private GameState gameState = GameState.RUNNING;
   private boolean isInventoryOpen = false;
@@ -45,6 +49,10 @@ public class Game {
     door = new Door(ImageId.DOOR, 900, 65);
     slime = new Slime(ImageId.SLIME, 800, 650 );
     monster = new Monster(ImageId.MONSTER, 100, 600);
+
+    plant1 = new Plants(ImageId.PLANT_BLUE, 30, 650);
+    plant2 = new Plants(ImageId.PLANT_GREEN, 10, 320);
+    plant3 = new Plants(ImageId.PLANT_BIG, 780, 620);
 
     addCollidableObject(platform2);
     addCollidableObject(platform);
@@ -108,9 +116,12 @@ public class Game {
       new DrawableItem(door.getImageId(), door.getX(), door.getY()),
       new DrawableItem(ground.getImageId(), ground.getX(), ground.getY()),
       new DrawableItem(player.getImageId(), player.getX(), player.getY()),
-      new DrawableItem(slime.getImageId(), slime.getX(), slime.getY()),
-      new DrawableItem(monster.imageId, monster.getX(), monster.getY())
-    ));
+      new DrawableItem(monster.imageId, monster.getX(), monster.getY()),
+      new DrawableItem(plant1.imageId, plant1.getX(), plant1.getY()),
+      new DrawableItem(plant2.imageId, plant2.getX(), plant2.getY()),
+      new DrawableItem(plant3.imageId, plant3.getX(), plant3.getY()),
+      new DrawableItem(slime.getImageId(), slime.getX(), slime.getY())
+      ));
     if(isInventoryOpen){
       System.out.println("Inventory open");
       items.add(new DrawableItem(inventory.getImageId(), inventory.getX(), inventory.getY()));

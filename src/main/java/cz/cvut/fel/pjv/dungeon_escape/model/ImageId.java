@@ -12,8 +12,10 @@ public enum ImageId {
   KEY("key.png"),
   DOOR("door.png"),
   SLIME("slime.png"),
-  MONSTER("crow.png");
-
+  MONSTER("crow.png"),
+  PLANT_BLUE("plant1.png"),
+  PLANT_GREEN("plant2.png"),
+  PLANT_BIG("placeToCraft.png"),;
 
   private final String fileName;
   private final Image image;
