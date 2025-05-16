@@ -65,13 +65,12 @@ public class MainMenu {
 
   private void startNewGame() {
     game.reset();
-    game = new Game();
     controller.setState(GameState.RUNNING);
     primaryStage.setScene(gameScene);
   }
 
   private void continueGame() {
-    if(controller.loadGame()){
+    if(controller.hasSavedGame() && controller.loadGame()){
       controller.setState(GameState.RUNNING);
       primaryStage.setScene(gameScene);
     }

@@ -1,13 +1,19 @@
 package cz.cvut.fel.pjv.dungeon_escape.controller;
 
+import com.fasterxml.jackson.databind.SerializationFeature;
 import cz.cvut.fel.pjv.dungeon_escape.model.Game;
 import cz.cvut.fel.pjv.dungeon_escape.model.GameItem;
 import cz.cvut.fel.pjv.dungeon_escape.model.GameState;
 import cz.cvut.fel.pjv.dungeon_escape.model.GameStateData;
 import cz.cvut.fel.pjv.dungeon_escape.model.entities.Player;
 import javafx.geometry.BoundingBox;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+
 
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 
 
 public class GameController {
@@ -16,17 +22,15 @@ public class GameController {
   private GameState state = GameState.RUNNING;
   private boolean wasInventoryToggled = false;
 
-  private static final String SAVE_FILE = "game_save.ser";
+  private static final String SAVE_FILE = "savegame.json";
 
   public GameController(Game game) {
     this.game = game;
   }
 
-
   public void setInputHandler(InputHandler inputHandler) {
     this.inputHandler = inputHandler;
   }
-
   public GameState getState() {
     return state;
   }
@@ -67,6 +71,7 @@ public class GameController {
     for (GameItem object : game.getCollidableObjects()) {
       checkObjectCollision(player, object);
     }
+
 //    check health. should not be there
     if(player.getHealth() == 0 && state == GameState.RUNNING){
       setState(GameState.GAME_OVER);
@@ -94,8 +99,6 @@ public class GameController {
     }
 
   }
-
-
   private void checkObjectCollision(Player player, GameItem object) {
     BoundingBox playerBounds = player.getBoundingBox();
     BoundingBox objectBounds = object.getBoundingBox();
@@ -132,33 +135,37 @@ public class GameController {
       }
     }
   }
-
   public void saveGame() {
-    try (ObjectOutputStream oos = new ObjectOutputStream(
-      new FileOutputStream(SAVE_FILE))) {
-      oos.writeObject(new GameStateData(game.getPlayer(), game));
+    Player player = game.getPlayer();
+//    System.out.println("player: " + player.getX() +  ", " + player.getY() +  ", " + player.getHealth() );
+//    System.out.println(game.isKeyTaken());
+    GameStateData gameData = new GameStateData();
+
+    gameData.setPlayerX(player.getX());
+    gameData.setPlayerY(player.getY());
+    gameData.setHealthPlayer(player.getHealth());
+    gameData.setKeyTaken(game.isKeyTaken());
+    try {
+      ObjectMapper om = new ObjectMapper();
+      om.writeValue(new File(SAVE_FILE), gameData);
       System.out.println("Game saved successfully");
     } catch (IOException e) {
-      System.err.println("Failed to save game: " + e.getMessage());
-    }
+      System.err.println("Failed to save game: " + e.getLocalizedMessage());
 
+    }
   }
   public boolean loadGame() {
-    File saveFile = new File(SAVE_FILE);
-    if (!saveFile.exists()) return false;
-
-    try (ObjectInputStream ois = new ObjectInputStream(
-      new FileInputStream(SAVE_FILE))) {
-      GameStateData savedState = (GameStateData) ois.readObject();
-
+    try {
+      ObjectMapper om = new ObjectMapper();
+      GameStateData gameData = om.readValue(new File(SAVE_FILE), GameStateData.class);
       Player player = game.getPlayer();
-      player.setX(savedState.getPlayerX());
-      player.setY(savedState.getPlayerY());
-      game.setKeyTaken(savedState.isKeyTaken());
-
+      player.setX(gameData.getPlayerX());
+      player.setY(gameData.getPlayerY());
+      game.setKeyTaken(gameData.isKeyTaken());
       System.out.println("Game loaded successfully");
       return true;
-    } catch (IOException | ClassNotFoundException e) {
+
+    } catch (IOException e) {
       System.err.println("Failed to load game: " + e.getMessage());
       return false;
     }

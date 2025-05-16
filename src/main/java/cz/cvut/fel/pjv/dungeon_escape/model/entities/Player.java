@@ -54,37 +54,35 @@ public class Player extends GameItem {
   public void setSpeed(double speed) {
     this.speed = speed;
   }
-
-
   public void setOnGround(boolean onGround) {
     isOnGround = onGround;
   }
-
   public boolean isOnGround() {
     return isOnGround;
   }
-
   public double getHealth() {
     return health;
   }
-
   public void getDamage(double damage) {
     health -= damage;
   }
-
   public void heal(int heal) {
     health += heal;
   }
-
   public void takeDamage(int damage) {
     health -= damage;
   }
-
-  public void resetPosition() {
+  public void reset() {
     this.x = 0;
     this.y = 0;
     this.speed = 0;
     this.isOnGround = false;
     this.inventory = new Inventory();
   }
+
+  public void setHealth(double health) {
+    this.health = health;
+  }
+
+
 }

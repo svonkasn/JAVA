@@ -11,6 +11,7 @@ public class Key extends GameItem {
     super(imageId, x, y);
     this.doorKey = doorKey;
   }
+
   public boolean fitsDoorKey(Door door){
     return this.doorKey.equals(door.getDoorKey());
   }

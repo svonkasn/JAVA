@@ -61,6 +61,7 @@ public class Game {
     addCollidableObject(monster);
 
     player = new Player(ImageId.PLAYER,0, 0, 10, gravity);
+    reset();
   }
 
 
@@ -137,8 +138,11 @@ public class Game {
     return items.toArray(new DrawableItem[0]);
   }
   public void reset() {
-    player.resetPosition();
+    player.reset();
+    player.setHealth(10);
     isTakenKey = false;
+    key.setX(900);
+    key.setY(650);
   }
 
   public Player getPlayer() {
