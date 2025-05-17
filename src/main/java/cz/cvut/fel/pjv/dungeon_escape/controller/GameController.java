@@ -1,19 +1,11 @@
 package cz.cvut.fel.pjv.dungeon_escape.controller;
 
-import com.fasterxml.jackson.databind.SerializationFeature;
-import cz.cvut.fel.pjv.dungeon_escape.model.Game;
-import cz.cvut.fel.pjv.dungeon_escape.model.GameItem;
-import cz.cvut.fel.pjv.dungeon_escape.model.GameState;
-import cz.cvut.fel.pjv.dungeon_escape.model.GameStateData;
+import cz.cvut.fel.pjv.dungeon_escape.model.*;
 import cz.cvut.fel.pjv.dungeon_escape.model.entities.Player;
 import javafx.geometry.BoundingBox;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
-
-
 import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.StandardCopyOption;
+import java.util.Iterator;
 
 
 public class GameController {
@@ -22,12 +14,13 @@ public class GameController {
   private GameState state = GameState.RUNNING;
   private boolean wasInventoryToggled = false;
 
+
   private static final String SAVE_FILE = "savegame.json";
 
   public GameController(Game game) {
     this.game = game;
-  }
 
+  }
   public void setInputHandler(InputHandler inputHandler) {
     this.inputHandler = inputHandler;
   }
@@ -77,12 +70,7 @@ public class GameController {
       setState(GameState.GAME_OVER);
     }
 
-
-    if (!game.isKeyTaken() && playerBounds.intersects(game.getKey().getBoundingBox())) {
-      player.addInventory(game.getKey());
-      game.setKeyTaken(true);
-      System.out.println("Taken key");
-    }
+    checkCollectibles(game);
 
     if (playerBounds.intersects(game.getDoor().getBoundingBox())) {
       if (game.getDoor().tryOpen(player)) {
@@ -99,6 +87,21 @@ public class GameController {
     }
 
   }
+  private void checkCollectibles(Game game) {
+    Iterator<InventoryItem> iterator = game.getItemList().iterator();
+    while (iterator.hasNext()) {
+      InventoryItem item = iterator.next();
+      if (item.getBoundingBox().intersects(game.getPlayer().getBoundingBox())
+        && item.canBeCollected(game)
+        && !game.getPlayer().getInventory().isFull()) {
+
+        item.onCollect(game);
+        iterator.remove();
+        System.out.println(item.getClass().getSimpleName() + " collected!");
+      }
+    }
+  }
+
   private void checkObjectCollision(Player player, GameItem object) {
     BoundingBox playerBounds = player.getBoundingBox();
     BoundingBox objectBounds = object.getBoundingBox();
@@ -144,7 +147,7 @@ public class GameController {
     gameData.setPlayerX(player.getX());
     gameData.setPlayerY(player.getY());
     gameData.setHealthPlayer(player.getHealth());
-    gameData.setKeyTaken(game.isKeyTaken());
+    gameData.setKeyTaken(game.getKey().isKeyTaken());
     try {
       ObjectMapper om = new ObjectMapper();
       om.writeValue(new File(SAVE_FILE), gameData);
@@ -161,7 +164,8 @@ public class GameController {
       Player player = game.getPlayer();
       player.setX(gameData.getPlayerX());
       player.setY(gameData.getPlayerY());
-      game.setKeyTaken(gameData.isKeyTaken());
+      player.setHealth(gameData.getHealthPlayer());
+      game.getKey().setKeyTaken(gameData.isKeyTaken());
       System.out.println("Game loaded successfully");
       return true;
 

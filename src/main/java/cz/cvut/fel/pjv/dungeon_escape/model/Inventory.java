@@ -58,7 +58,7 @@ public class Inventory {
 
   private void updateItemPosition(){
     for ( int i = 0; i < items.size(); i++ ){
-      items.get(i).setX(slotX + i * (slotSize + 5));  // items in a row
+      items.get(i).setX(slotX + i * (slotSize + 40));  // items in a row
       items.get(i).setY(slotY);
     }
   }

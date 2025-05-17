@@ -28,8 +28,6 @@ public class Player extends GameItem {
       speed = 0;
     }
   }
-
-
   public void move(boolean left, boolean right, boolean jump) {
     double moveSpeed = 4.0;
     if (left) x -= moveSpeed;
@@ -43,28 +41,12 @@ public class Player extends GameItem {
       isOnGround = false;
     }
   }
-  public Inventory getInventory() {
-    return inventory;
-  }
-
   public void addInventory(GameItem item) {
     inventory.addItm(item);
   }
   public void removeInventory(GameItem item) {inventory.removeItm(item);}
-  public void setSpeed(double speed) {
-    this.speed = speed;
-  }
-  public void setOnGround(boolean onGround) {
-    isOnGround = onGround;
-  }
   public boolean isOnGround() {
     return isOnGround;
-  }
-  public double getHealth() {
-    return health;
-  }
-  public void getDamage(double damage) {
-    health -= damage;
   }
   public void heal(int heal) {
     health += heal;
@@ -79,10 +61,22 @@ public class Player extends GameItem {
     this.isOnGround = false;
     this.inventory = new Inventory();
   }
-
+  public Inventory getInventory() {
+    return inventory;
+  }
+  public double getHealth() {
+    return health;
+  }
+  public void getDamage(double damage) {
+    health -= damage;
+  }
+  public void setOnGround(boolean onGround) {
+    isOnGround = onGround;
+  }
+  public void setSpeed(double speed) {
+    this.speed = speed;
+  }
   public void setHealth(double health) {
     this.health = health;
   }
-
-
 }

@@ -1,8 +1,7 @@
 package cz.cvut.fel.pjv.dungeon_escape.model;
 
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
+
 
 public class GameStateData {
   private double playerX;
@@ -10,17 +9,7 @@ public class GameStateData {
   private double healthPlayer;
   private boolean keyTaken;
 
-  @JsonCreator
-  public GameStateData(){
-//    @JsonProperty("playerX") double playerX,
-//    @JsonProperty("playerY") double playerY,
-//    @JsonProperty("playerHealth") double healthPlayer,
-//    @JsonProperty("keyTaken") boolean keyTaken) {
-//    this.playerX = playerX;
-//    this.playerY = playerY;
-//    this.keyTaken = keyTaken;
-
-  }
+  public GameStateData(){}
 
   public double getHealthPlayer() {
     return healthPlayer;

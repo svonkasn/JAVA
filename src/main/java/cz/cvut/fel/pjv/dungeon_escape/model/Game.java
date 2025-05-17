@@ -5,12 +5,9 @@ import cz.cvut.fel.pjv.dungeon_escape.model.entities.Monster;
 import cz.cvut.fel.pjv.dungeon_escape.model.entities.Player;
 import cz.cvut.fel.pjv.dungeon_escape.model.entities.Slime;
 import cz.cvut.fel.pjv.dungeon_escape.model.environment.Door;
-import cz.cvut.fel.pjv.dungeon_escape.model.environment.Plants;
+import cz.cvut.fel.pjv.dungeon_escape.model.environment.Plant;
 import cz.cvut.fel.pjv.dungeon_escape.model.items.Key;
 import javafx.geometry.BoundingBox;
-import javafx.geometry.Bounds;
-import javafx.scene.image.Image;
-import javafx.scene.image.WritableImage;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -18,6 +15,8 @@ import java.util.List;
 
 public class Game {
   private List<GameItem> collidableObjects = new ArrayList<>();
+  List<InventoryItem> itemList = new ArrayList<>();
+
   private final double gravity = 0.1;
 
   private final GameItem backround;
@@ -30,16 +29,15 @@ public class Game {
   private final Door door;
   private final Slime slime;
   private final Enemy monster;
-  private final Plants plant1;
-  private final Plants plant2;
-  private final Plants plant3;
+  private final Plant plant1;
+  private final Plant plant2;
+  private final Plant plant3;
 
   private GameState gameState = GameState.RUNNING;
   private boolean isInventoryOpen = false;
-  private boolean isTakenKey = false;
+//  private boolean isTakenKey = false;
 
   public Game() {
-
     backround = new GameItem(ImageId.BGR, 0, 0);
     platform = new Platforms(ImageId.PLATFORM,0, 0, -25, 350);
     platform2 = new Platforms(ImageId.PLATFORM,0, 0, 630, 170);
@@ -50,9 +48,9 @@ public class Game {
     slime = new Slime(ImageId.SLIME, 800, 650 );
     monster = new Monster(ImageId.MONSTER, 100, 600);
 
-    plant1 = new Plants(ImageId.PLANT_BLUE, 30, 650);
-    plant2 = new Plants(ImageId.PLANT_GREEN, 10, 320);
-    plant3 = new Plants(ImageId.PLANT_BIG, 780, 620);
+    plant1 = new Plant(ImageId.PLANT_BLUE, 30, 650);
+    plant2 = new Plant(ImageId.PLANT_GREEN, 10, 320);
+    plant3 = new Plant(ImageId.PLANT_BIG, 780, 620);
 
     addCollidableObject(platform2);
     addCollidableObject(platform);
@@ -60,10 +58,21 @@ public class Game {
     addCollidableObject(slime);
     addCollidableObject(monster);
 
+    addInventoryItem(key);
+    addInventoryItem(plant1);
+    addInventoryItem(plant2);
+
+
     player = new Player(ImageId.PLAYER,0, 0, 10, gravity);
     reset();
   }
+  public void addInventoryItem(InventoryItem item) {
+    itemList.add(item);
+  }
 
+  public List<InventoryItem> getItemList() {
+    return itemList;
+  }
 
   public void addCollidableObject(GameItem gameItem){
     collidableObjects.add(gameItem);
@@ -71,9 +80,9 @@ public class Game {
   public List<GameItem> getCollidableObjects(){
     return collidableObjects;
   }
-  public boolean isKeyTaken(){
-    return isTakenKey;
-  }
+//  public boolean isKeyTaken(){
+//    return isTakenKey;
+//  }
   public void updatePhysics(){
     if(gameState == GameState.RUNNING){
       player.update();
@@ -118,8 +127,8 @@ public class Game {
       new DrawableItem(ground.getImageId(), ground.getX(), ground.getY()),
       new DrawableItem(player.getImageId(), player.getX(), player.getY()),
       new DrawableItem(monster.imageId, monster.getX(), monster.getY()),
-      new DrawableItem(plant1.imageId, plant1.getX(), plant1.getY()),
-      new DrawableItem(plant2.imageId, plant2.getX(), plant2.getY()),
+//      new DrawableItem(plant1.imageId, plant1.getX(), plant1.getY()),
+//      new DrawableItem(plant2.imageId, plant2.getX(), plant2.getY()),
       new DrawableItem(plant3.imageId, plant3.getX(), plant3.getY()),
       new DrawableItem(slime.getImageId(), slime.getX(), slime.getY())
       ));
@@ -131,8 +140,11 @@ public class Game {
       }
     }
 
-    if (!isTakenKey) {
-      items.add(new DrawableItem(key.getImageId(), key.getX(), key.getY()));
+
+    for (InventoryItem item : itemList) {
+      if (item.canBeCollected(this)) {
+        items.add(new DrawableItem(item.getImageId(), item.getX(), item.getY()));
+      }
     }
 
     return items.toArray(new DrawableItem[0]);
@@ -140,9 +152,10 @@ public class Game {
   public void reset() {
     player.reset();
     player.setHealth(10);
-    isTakenKey = false;
+//    isTakenKey = false;
     key.setX(900);
     key.setY(650);
+    key.setKeyTaken(false);
   }
 
   public Player getPlayer() {
@@ -160,14 +173,12 @@ public class Game {
   public void setGameState(GameState gameState) {
     this.gameState = gameState;
   }
-  public void setKeyTaken(boolean taken){
-    isTakenKey = taken;
-  }
-
+//  public void setKeyTaken(boolean taken){
+//    isTakenKey = taken;
+//  }
   public void toggleInventory() {
     isInventoryOpen = !isInventoryOpen;
   }
-
   public Enemy getMonster() {
     return monster;
   }
