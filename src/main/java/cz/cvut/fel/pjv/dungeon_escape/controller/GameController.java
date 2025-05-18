@@ -92,7 +92,7 @@ public class GameController {
     while (iterator.hasNext()) {
       InventoryItem item = iterator.next();
       if (item.getBoundingBox().intersects(game.getPlayer().getBoundingBox())
-        && item.canBeCollected(game)
+        && item.canBeCollected()
         && !game.getPlayer().getInventory().isFull()) {
 
         item.onCollect(game);
@@ -147,7 +147,7 @@ public class GameController {
     gameData.setPlayerX(player.getX());
     gameData.setPlayerY(player.getY());
     gameData.setHealthPlayer(player.getHealth());
-    gameData.setKeyTaken(game.getKey().isKeyTaken());
+    gameData.setKeyTaken(game.getKey().isCollected());
     try {
       ObjectMapper om = new ObjectMapper();
       om.writeValue(new File(SAVE_FILE), gameData);
@@ -165,7 +165,7 @@ public class GameController {
       player.setX(gameData.getPlayerX());
       player.setY(gameData.getPlayerY());
       player.setHealth(gameData.getHealthPlayer());
-      game.getKey().setKeyTaken(gameData.isKeyTaken());
+      game.getKey().setCollected(gameData.isKeyTaken());
       System.out.println("Game loaded successfully");
       return true;
 

@@ -35,7 +35,6 @@ public class Game {
 
   private GameState gameState = GameState.RUNNING;
   private boolean isInventoryOpen = false;
-//  private boolean isTakenKey = false;
 
   public Game() {
     backround = new GameItem(ImageId.BGR, 0, 0);
@@ -80,9 +79,7 @@ public class Game {
   public List<GameItem> getCollidableObjects(){
     return collidableObjects;
   }
-//  public boolean isKeyTaken(){
-//    return isTakenKey;
-//  }
+
   public void updatePhysics(){
     if(gameState == GameState.RUNNING){
       player.update();
@@ -127,8 +124,6 @@ public class Game {
       new DrawableItem(ground.getImageId(), ground.getX(), ground.getY()),
       new DrawableItem(player.getImageId(), player.getX(), player.getY()),
       new DrawableItem(monster.imageId, monster.getX(), monster.getY()),
-//      new DrawableItem(plant1.imageId, plant1.getX(), plant1.getY()),
-//      new DrawableItem(plant2.imageId, plant2.getX(), plant2.getY()),
       new DrawableItem(plant3.imageId, plant3.getX(), plant3.getY()),
       new DrawableItem(slime.getImageId(), slime.getX(), slime.getY())
       ));
@@ -142,7 +137,7 @@ public class Game {
 
 
     for (InventoryItem item : itemList) {
-      if (item.canBeCollected(this)) {
+      if (item.canBeCollected()) {
         items.add(new DrawableItem(item.getImageId(), item.getX(), item.getY()));
       }
     }
@@ -152,10 +147,11 @@ public class Game {
   public void reset() {
     player.reset();
     player.setHealth(10);
-//    isTakenKey = false;
     key.setX(900);
     key.setY(650);
-    key.setKeyTaken(false);
+    key.setCollected(false);
+    plant1.setCollected(false);
+    plant2.setCollected(false);
   }
 
   public Player getPlayer() {
@@ -173,9 +169,6 @@ public class Game {
   public void setGameState(GameState gameState) {
     this.gameState = gameState;
   }
-//  public void setKeyTaken(boolean taken){
-//    isTakenKey = taken;
-//  }
   public void toggleInventory() {
     isInventoryOpen = !isInventoryOpen;
   }
