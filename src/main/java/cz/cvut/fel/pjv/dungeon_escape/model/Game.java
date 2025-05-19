@@ -7,6 +7,7 @@ import cz.cvut.fel.pjv.dungeon_escape.model.entities.Slime;
 import cz.cvut.fel.pjv.dungeon_escape.model.environment.Door;
 import cz.cvut.fel.pjv.dungeon_escape.model.environment.Plant;
 import cz.cvut.fel.pjv.dungeon_escape.model.items.Key;
+import cz.cvut.fel.pjv.dungeon_escape.model.items.Weapon;
 import javafx.geometry.BoundingBox;
 
 import java.util.ArrayList;
@@ -16,22 +17,25 @@ import java.util.List;
 public class Game {
   private List<GameItem> collidableObjects = new ArrayList<>();
   List<InventoryItem> itemList = new ArrayList<>();
+  List<Enemy> enemyList = new ArrayList<>();
+
 
   private final double gravity = 0.1;
 
   private final GameItem backround;
-  private final Player player;
+  private Player player;
   private final Platforms platform;
   private final Platforms platform2;
   private final Platforms ground;
   private final GameItem inventory;
   private final Key key;
   private final Door door;
-  private final Slime slime;
-  private final Enemy monster;
-  private final Plant plant1;
-  private final Plant plant2;
-  private final Plant plant3;
+  private Enemy slime;
+  private Enemy monster;
+  private Plant plant1;
+  private Plant plant2;
+  private Plant plant3;
+  private Weapon weapon;
 
   private GameState gameState = GameState.RUNNING;
   private boolean isInventoryOpen = false;
@@ -51,39 +55,59 @@ public class Game {
     plant2 = new Plant(ImageId.PLANT_GREEN, 10, 320);
     plant3 = new Plant(ImageId.PLANT_BIG, 780, 620);
 
+    weapon = new Weapon(ImageId.WEAPON, 100, 100);
+
     addCollidableObject(platform2);
     addCollidableObject(platform);
     addCollidableObject(ground);
-    addCollidableObject(slime);
-    addCollidableObject(monster);
 
     addInventoryItem(key);
     addInventoryItem(plant1);
     addInventoryItem(plant2);
+    addInventoryItem(weapon);
+
+    addEnemies(slime);
+    addEnemies(monster);
 
 
     player = new Player(ImageId.PLAYER,0, 0, 10, gravity);
     reset();
   }
+  public void addEnemies(Enemy enemy){
+    enemyList.add(enemy);
+    addCollidableObject(enemy);
+  }
+
   public void addInventoryItem(InventoryItem item) {
     itemList.add(item);
   }
-
-  public List<InventoryItem> getItemList() {
-    return itemList;
-  }
-
   public void addCollidableObject(GameItem gameItem){
     collidableObjects.add(gameItem);
   }
-  public List<GameItem> getCollidableObjects(){
-    return collidableObjects;
-  }
-
   public void updatePhysics(){
     if(gameState == GameState.RUNNING){
       player.update();
-      monster.update(player);
+      for(Enemy enemy: enemyList){
+        enemy.update(player);
+      }
+    }
+  }
+  public void damageEnemies() {
+    List<Enemy> toRemove = new ArrayList<>();
+
+    for (Enemy enemy : enemyList) {
+      if (player.getBoundingBox().intersects(enemy.getBoundingBox())) {
+        enemy.takeDamage(0.5);
+        if (enemy.isDead()) {
+          System.out.println("Enemy died");
+          toRemove.add(enemy);
+        }
+      }
+    }
+
+    for (Enemy enemy : toRemove) {
+      getCollidableObjects().remove(enemy);
+      enemyList.remove(enemy);
     }
   }
   // Should be in GameController...?
@@ -123,9 +147,7 @@ public class Game {
       new DrawableItem(door.getImageId(), door.getX(), door.getY()),
       new DrawableItem(ground.getImageId(), ground.getX(), ground.getY()),
       new DrawableItem(player.getImageId(), player.getX(), player.getY()),
-      new DrawableItem(monster.imageId, monster.getX(), monster.getY()),
-      new DrawableItem(plant3.imageId, plant3.getX(), plant3.getY()),
-      new DrawableItem(slime.getImageId(), slime.getX(), slime.getY())
+      new DrawableItem(plant3.imageId, plant3.getX(), plant3.getY())
       ));
     if(isInventoryOpen){
       System.out.println("Inventory open");
@@ -135,10 +157,15 @@ public class Game {
       }
     }
 
-
     for (InventoryItem item : itemList) {
       if (item.canBeCollected()) {
         items.add(new DrawableItem(item.getImageId(), item.getX(), item.getY()));
+      }
+    }
+    for(Enemy enemy: enemyList){
+      if(!enemy.isDead()){
+        System.out.println( enemy + " health " + enemy.getHealth());
+        items.add(new DrawableItem(enemy.getImageId(), enemy.getX(), enemy.getY()));
       }
     }
 
@@ -157,7 +184,13 @@ public class Game {
   public Player getPlayer() {
     return player;
   }
-  public Slime getSlime() {
+  public List<InventoryItem> getItemList() {
+    return itemList;
+  }
+  public List<GameItem> getCollidableObjects(){
+    return collidableObjects;
+  }
+  public Enemy getSlime() {
     return slime;
   }
   public Door getDoor(){

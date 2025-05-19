@@ -42,10 +42,15 @@ public class GameController {
     } else if (!inputHandler.shouldToggleInventory()) {
       wasInventoryToggled = false;
     }
+
     if(state == GameState.RUNNING  && inputHandler != null) {
       handleInput();
       game.updatePhysics();
       handleInteractions();
+    }
+    if(inputHandler.isAttack()) {
+      game.damageEnemies();
+      System.out.println("Attacking by player");
     }
   }
   private void handleInput() {
@@ -82,10 +87,6 @@ public class GameController {
         }
       }
     }
-    if (playerBounds.intersects(game.getSlime().getBoundingBox())) {
-      game.getSlime().attack(player);
-    }
-
   }
   private void checkCollectibles(Game game) {
     Iterator<InventoryItem> iterator = game.getItemList().iterator();

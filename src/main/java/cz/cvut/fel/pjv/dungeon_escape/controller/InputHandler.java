@@ -1,11 +1,10 @@
 package cz.cvut.fel.pjv.dungeon_escape.controller;
-import cz.cvut.fel.pjv.dungeon_escape.model.Game;
 import javafx.scene.Scene;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 
 public class InputHandler {
-  private boolean left, right, jump, inventoryKeyPressed;
+  private boolean left, right, jump, inventoryKeyPressed, attack;
   private boolean inventoryToggleProcessed;
 
 
@@ -36,6 +35,7 @@ public class InputHandler {
       case A -> left = isPressed;
       case D -> right = isPressed;
       case SPACE -> jump = isPressed;
+      case ENTER -> attack = isPressed;
     }
   }
 
@@ -44,4 +44,8 @@ public class InputHandler {
   public boolean isJumpPressed() { return jump; }
   public boolean shouldToggleInventory() {
     return inventoryKeyPressed;
-  }}
+  }
+  public boolean isAttack() {
+    return attack;
+  }
+}

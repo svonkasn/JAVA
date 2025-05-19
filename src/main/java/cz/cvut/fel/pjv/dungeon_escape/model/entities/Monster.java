@@ -10,8 +10,6 @@ public class Monster extends Enemy {
   private double speed = 1.0;
   private boolean movingRight = true;
 
-
-
   public Monster(ImageId imageId, double x, double y) {
     super(imageId, x, y);
     this.patrolMinX = x - 100;
