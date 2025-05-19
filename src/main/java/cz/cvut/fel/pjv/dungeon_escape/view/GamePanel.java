@@ -24,9 +24,12 @@ import javafx.stage.Stage;
 
 import java.util.EnumMap;
 import java.util.Map;
+import java.util.logging.Logger;
 
 
 public class GamePanel extends Application {
+  private static final Logger logger = Logger.getLogger(Game.class.getName());
+
   Map<ImageId, Image> gameImages = new EnumMap<>(ImageId.class);
   private MainMenu mainMenu;
   private GameController controller;
@@ -34,6 +37,7 @@ public class GamePanel extends Application {
 
   @Override
   public void start(Stage stage){
+    logger.info("Game started");
     loadImages();
 // Init model and controller
     game = new Game();

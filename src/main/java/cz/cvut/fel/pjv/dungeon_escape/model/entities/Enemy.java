@@ -3,8 +3,13 @@ package cz.cvut.fel.pjv.dungeon_escape.model.entities;
 import cz.cvut.fel.pjv.dungeon_escape.model.GameItem;
 import cz.cvut.fel.pjv.dungeon_escape.model.ImageId;
 
+import java.util.logging.Logger;
+
 
 public class Enemy extends GameItem {
+  private static final Logger logger = Logger.getLogger(Enemy.class.getName());
+
+
   private double health = 10;
   private boolean dead = false;
   protected long lastAttackTime = 0;
@@ -31,9 +36,11 @@ public class Enemy extends GameItem {
   }
   public void takeDamage(double damage) {
      health -= damage;
-     if (health < 0) {
+    logger.info("Enemy took " + damage + " damage. Remaining health: " + health);
+    if (health < 0) {
        setDead(true);
-     }
+      logger.warning("Enemy is dead.");
+    }
   }
   public void update(Player player) {}
   public boolean isAttacking() {

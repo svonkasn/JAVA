@@ -13,8 +13,11 @@ import javafx.geometry.BoundingBox;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Logger;
 
 public class Game {
+  private static final Logger logger = Logger.getLogger(Game.class.getName());
+
   private List<GameItem> collidableObjects = new ArrayList<>();
   List<InventoryItem> itemList = new ArrayList<>();
   List<Enemy> enemyList = new ArrayList<>();
@@ -23,7 +26,7 @@ public class Game {
   private final double gravity = 0.1;
 
   private final GameItem backround;
-  private Player player;
+  private final Player player;
   private final Platforms platform;
   private final Platforms platform2;
   private final Platforms ground;
@@ -99,7 +102,6 @@ public class Game {
       if (player.getBoundingBox().intersects(enemy.getBoundingBox())) {
         enemy.takeDamage(0.5);
         if (enemy.isDead()) {
-          System.out.println("Enemy died");
           toRemove.add(enemy);
         }
       }
@@ -150,7 +152,7 @@ public class Game {
       new DrawableItem(plant3.imageId, plant3.getX(), plant3.getY())
       ));
     if(isInventoryOpen){
-      System.out.println("Inventory open");
+      logger.info("Inventory open");
       items.add(new DrawableItem(inventory.getImageId(), inventory.getX(), inventory.getY()));
       for (GameItem item : player.getInventory().getItems()) {
         items.add(new DrawableItem(item.getImageId(), item.getX(), item.getY()));
@@ -164,7 +166,7 @@ public class Game {
     }
     for(Enemy enemy: enemyList){
       if(!enemy.isDead()){
-        System.out.println( enemy + " health " + enemy.getHealth());
+        logger.info(enemy + " health " + enemy.getHealth());
         items.add(new DrawableItem(enemy.getImageId(), enemy.getX(), enemy.getY()));
       }
     }
