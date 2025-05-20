@@ -38,6 +38,9 @@ public class Game {
     loadLevel("level1.json");
     reset();
   }
+  public void nextLevel() {
+    loadLevel("level2.json");
+  }
   public void loadLevel(String path) {
     try {
       LevelLoader.loadLevel(this, path);

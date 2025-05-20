@@ -26,7 +26,6 @@ public class Monster extends Enemy {
     if (distanceX <= 120 && distanceY <= 70) {
       attack(player);
       attackDirection = (playerX > getX()) ? 1 : -1;
-      System.out.println("Damage");
     } else
       patrol();
 

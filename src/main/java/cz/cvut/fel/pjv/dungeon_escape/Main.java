@@ -11,12 +11,12 @@ public class Main {
 
 
   public static void main(String[] args) {
-//    try {
-//      LogManager.getLogManager().readConfiguration(
-//        new FileInputStream("logging.properties"));
-//    } catch (IOException e) {
-//      e.printStackTrace();
-//    }
+    try {
+      LogManager.getLogManager().readConfiguration(
+        new FileInputStream("logging.properties"));
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
       Application.launch(GamePanel.class, args);
 
     }

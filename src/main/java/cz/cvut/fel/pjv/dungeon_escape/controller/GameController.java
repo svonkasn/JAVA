@@ -2,14 +2,15 @@ package cz.cvut.fel.pjv.dungeon_escape.controller;
 
 import cz.cvut.fel.pjv.dungeon_escape.model.*;
 import cz.cvut.fel.pjv.dungeon_escape.model.entities.Player;
-import cz.cvut.fel.pjv.dungeon_escape.model.items.Key;
 import javafx.geometry.BoundingBox;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.*;
 import java.util.Iterator;
+import java.util.logging.Logger;
 
 
 public class GameController {
+  private static final Logger logger = Logger.getLogger(Game.class.getName());
   private Game game;
   private InputHandler inputHandler;
   private GameState state = GameState.RUNNING;
@@ -39,7 +40,7 @@ public class GameController {
 //    System.out.println(game.getPlayer());
     if(inputHandler.isAttack() && game.getPlayer().getInventory().hasWeapon()) {
       game.damageEnemies();
-      System.out.println("Attacking by player");
+      logger.info("Attacking by player");
     }
   }
   private void handleInput() {
@@ -66,17 +67,13 @@ public class GameController {
     }
 
     checkCollectibles(game);
-    Key key = game.getKey();
-    if(key != null) {
-      System.out.println(key.isCollected());
-    }
-
     if (playerBounds.intersects(game.getDoor().getBoundingBox())) {
       if (game.getDoor().tryOpen(player)) {
         if (player.getInventory().hasKey()) {
           player.getInventory().useKey();
           player.removeInventory(game.getKey());
-          System.out.println("Door opened");
+          logger.info("Door opened");
+          game.nextLevel();
           // TODO: game.nextLevel()
         }
       }
@@ -92,7 +89,7 @@ public class GameController {
 
         item.onCollect(game);
         iterator.remove();
-        System.out.println(item.getClass().getSimpleName() + " collected!");
+        logger.info("Collected item: " + item.getClass().getSimpleName());
       }
     }
   }
@@ -145,10 +142,9 @@ public class GameController {
     try {
       ObjectMapper om = new ObjectMapper();
       om.writeValue(new File(SAVE_FILE), gameData);
-      System.out.println("Game saved successfully");
+      logger.info("Game saved successfully");
     } catch (IOException e) {
-      System.err.println("Failed to save game: " + e.getLocalizedMessage());
-
+      logger.info("Failed to save game:" + e.getMessage());
     }
   }
 
@@ -161,11 +157,11 @@ public class GameController {
       player.setY(gameData.getPlayerY());
       player.setHealth(gameData.getHealthPlayer());
       game.getKey().setCollected(gameData.isKeyTaken());
-      System.out.println("Game loaded successfully");
+      logger.info("Game loaded successfully");
       return true;
 
     } catch (IOException e) {
-      System.err.println("Failed to load game: " + e.getMessage());
+      logger.info("Failed to load game:" + e.getMessage());
       return false;
     }
   }
