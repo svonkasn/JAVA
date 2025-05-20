@@ -2,6 +2,7 @@ package cz.cvut.fel.pjv.dungeon_escape.controller;
 
 import cz.cvut.fel.pjv.dungeon_escape.model.*;
 import cz.cvut.fel.pjv.dungeon_escape.model.entities.Player;
+import cz.cvut.fel.pjv.dungeon_escape.model.items.Key;
 import javafx.geometry.BoundingBox;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.*;
@@ -14,26 +15,13 @@ public class GameController {
   private GameState state = GameState.RUNNING;
   private boolean wasInventoryToggled = false;
 
-
   private static final String SAVE_FILE = "savegame.json";
 
   public GameController(Game game) {
     this.game = game;
-
   }
   public void setInputHandler(InputHandler inputHandler) {
     this.inputHandler = inputHandler;
-  }
-  public GameState getState() {
-    return state;
-  }
-  public void setState(GameState gameState) {
-    this.state = gameState;
-    game.setGameState(state);
-  }
-  public double getPlayerHealth(){
-    Player player = game.getPlayer();
-    return player.getHealth();
   }
   public void update() {
     if (inputHandler.shouldToggleInventory() && !wasInventoryToggled) {
@@ -48,7 +36,8 @@ public class GameController {
       game.updatePhysics();
       handleInteractions();
     }
-    if(inputHandler.isAttack()) {
+//    System.out.println(game.getPlayer());
+    if(inputHandler.isAttack() && game.getPlayer().getInventory().hasWeapon()) {
       game.damageEnemies();
       System.out.println("Attacking by player");
     }
@@ -60,6 +49,7 @@ public class GameController {
       inputHandler.isJumpPressed()
     );
   }
+
   private void handleInteractions(){
     Player player = game.getPlayer();
     BoundingBox playerBounds = player.getBoundingBox();
@@ -76,6 +66,10 @@ public class GameController {
     }
 
     checkCollectibles(game);
+    Key key = game.getKey();
+    if(key != null) {
+      System.out.println(key.isCollected());
+    }
 
     if (playerBounds.intersects(game.getDoor().getBoundingBox())) {
       if (game.getDoor().tryOpen(player)) {
@@ -102,7 +96,6 @@ public class GameController {
       }
     }
   }
-
   private void checkObjectCollision(Player player, GameItem object) {
     BoundingBox playerBounds = player.getBoundingBox();
     BoundingBox objectBounds = object.getBoundingBox();
@@ -158,6 +151,7 @@ public class GameController {
 
     }
   }
+
   public boolean loadGame() {
     try {
       ObjectMapper om = new ObjectMapper();
@@ -178,5 +172,11 @@ public class GameController {
   public boolean hasSavedGame() {
     return new File(SAVE_FILE).exists();
   }
-
+  public void setState(GameState gameState) {
+    this.state = gameState;
+    game.setGameState(state);
+  }
+  public GameState getState() {
+    return state;
+  }
 }

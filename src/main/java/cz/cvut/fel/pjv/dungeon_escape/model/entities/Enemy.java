@@ -52,7 +52,6 @@ public class Enemy extends GameItem {
   public int getAttackDirection() {
     return attackDirection;
   }
-
   public double getHealth() {
     return health;
   }
@@ -65,4 +64,5 @@ public class Enemy extends GameItem {
   public void setDead(boolean dead) {
     this.dead = dead;
   }
+  public void reset() {}
 }

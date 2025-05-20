@@ -142,15 +142,15 @@ public class GamePanel extends Application {
     for (DrawableItem di : game.getItemsToDraw())
       gc.drawImage(gameImages.get(di.imageId()), di.x(), di.y());
 
-
-    if (game.getMonster().isAttacking()) {
-      drawMonsterAttackEffect(gc, game.getMonster());
+    Enemy monster = game.getMonster();
+    if (monster != null && monster.isAttacking()) {
+      drawMonsterAttackEffect(gc, monster);
     }
   }
 
   private void drawHealth(GraphicsContext gc) {
     double maxHealth = 10;
-    double currentHealth = controller.getPlayerHealth();
+    double currentHealth = game.getPlayer().getHealth();
     double barWidth = 200;
     double barHeight = 20;
     double x = 380;

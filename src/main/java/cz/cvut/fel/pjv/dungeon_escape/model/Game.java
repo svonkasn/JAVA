@@ -7,80 +7,56 @@ import cz.cvut.fel.pjv.dungeon_escape.model.entities.Slime;
 import cz.cvut.fel.pjv.dungeon_escape.model.environment.Door;
 import cz.cvut.fel.pjv.dungeon_escape.model.environment.Plant;
 import cz.cvut.fel.pjv.dungeon_escape.model.items.Key;
-import cz.cvut.fel.pjv.dungeon_escape.model.items.Weapon;
 import javafx.geometry.BoundingBox;
 
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Logger;
 
 public class Game {
   private static final Logger logger = Logger.getLogger(Game.class.getName());
 
-  private List<GameItem> collidableObjects = new ArrayList<>();
-  List<InventoryItem> itemList = new ArrayList<>();
-  List<Enemy> enemyList = new ArrayList<>();
-
-
-  private final double gravity = 0.1;
-
-  private final GameItem backround;
-  private final Player player;
-  private final Platforms platform;
-  private final Platforms platform2;
-  private final Platforms ground;
-  private final GameItem inventory;
-  private final Key key;
-  private final Door door;
-  private Enemy slime;
-  private Enemy monster;
-  private Plant plant1;
-  private Plant plant2;
-  private Plant plant3;
-  private Weapon weapon;
-
   private GameState gameState = GameState.RUNNING;
   private boolean isInventoryOpen = false;
 
+  private final double gravity = 0.1;
+  private final GameItem background = new GameItem(ImageId.BGR, 0, 0);
+  private Door door;
+  private final GameItem inventory = new GameItem(ImageId.INVENTORY, 0, 0);
+  private final Player player;
+  private Key key;
+
+  private final List<Platforms> platforms = new ArrayList<>();
+  private final List<Plant> plants = new ArrayList<>();
+  public final List<Enemy> enemyList = new ArrayList<>();
+  private final List<InventoryItem> itemList = new ArrayList<>();
+  private final List<GameItem> collidableObjects = new ArrayList<>();
+
   public Game() {
-    backround = new GameItem(ImageId.BGR, 0, 0);
-    platform = new Platforms(ImageId.PLATFORM,0, 0, -25, 350);
-    platform2 = new Platforms(ImageId.PLATFORM,0, 0, 630, 170);
-    ground = new Platforms(ImageId.GROUND,0, 0, 0, 690);
-    inventory = new GameItem(ImageId.INVENTORY, 0,0);
-    key = new Key(ImageId.KEY, 900,650,"key1");
-    door = new Door(ImageId.DOOR, 900, 65);
-    slime = new Slime(ImageId.SLIME, 800, 650 );
-    monster = new Monster(ImageId.MONSTER, 100, 600);
-
-    plant1 = new Plant(ImageId.PLANT_BLUE, 30, 650);
-    plant2 = new Plant(ImageId.PLANT_GREEN, 10, 320);
-    plant3 = new Plant(ImageId.PLANT_BIG, 780, 620);
-
-    weapon = new Weapon(ImageId.WEAPON, 100, 100);
-
-    addCollidableObject(platform2);
-    addCollidableObject(platform);
-    addCollidableObject(ground);
-
-    addInventoryItem(key);
-    addInventoryItem(plant1);
-    addInventoryItem(plant2);
-    addInventoryItem(weapon);
-
-    addEnemies(slime);
-    addEnemies(monster);
-
-
-    player = new Player(ImageId.PLAYER,0, 0, 10, gravity);
+    player = new Player(ImageId.PLAYER, 0, 0, 10, gravity);
+    loadLevel("level1.json");
     reset();
+  }
+  public void loadLevel(String path) {
+    try {
+      LevelLoader.loadLevel(this, path);
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
   }
   public void addEnemies(Enemy enemy){
     enemyList.add(enemy);
     addCollidableObject(enemy);
   }
-
+  public void addPlant(Plant plant) {
+    plants.add(plant);
+    addInventoryItem(plant);
+  }
+  public void addPlatform(Platforms platform) {
+    platforms.add(platform);
+    addCollidableObject(platform);
+  }
   public void addInventoryItem(InventoryItem item) {
     itemList.add(item);
   }
@@ -106,7 +82,6 @@ public class Game {
         }
       }
     }
-
     for (Enemy enemy : toRemove) {
       getCollidableObjects().remove(enemy);
       enemyList.remove(enemy);
@@ -115,7 +90,7 @@ public class Game {
   // Should be in GameController...?
   public void checkLevelBounds(){
     BoundingBox playerBounds = player.getBoundingBox();
-    BoundingBox backgroundBounds = backround.getBoundingBox();
+    BoundingBox backgroundBounds = background.getBoundingBox();
 //    System.out.println(backgroundBounds.getHeight() + " " + backgroundBounds.getWidth());
     // check down
     if (!player.isOnGround()) {
@@ -142,47 +117,67 @@ public class Game {
     player.move(left, right, jump);
   }
   public DrawableItem[] getItemsToDraw() {
-    List<DrawableItem> items = new ArrayList<>(Arrays.asList(
-      new DrawableItem(backround.getImageId(), backround.getX(), backround.getY()),
-      new DrawableItem(platform.getImageId(), platform.getX(), platform.getY()),
-      new DrawableItem(platform2.getImageId(), platform2.getX(), platform2.getY()),
-      new DrawableItem(door.getImageId(), door.getX(), door.getY()),
-      new DrawableItem(ground.getImageId(), ground.getX(), ground.getY()),
-      new DrawableItem(player.getImageId(), player.getX(), player.getY()),
-      new DrawableItem(plant3.imageId, plant3.getX(), plant3.getY())
-      ));
-    if(isInventoryOpen){
-      logger.info("Inventory open");
-      items.add(new DrawableItem(inventory.getImageId(), inventory.getX(), inventory.getY()));
-      for (GameItem item : player.getInventory().getItems()) {
-        items.add(new DrawableItem(item.getImageId(), item.getX(), item.getY()));
+    List<DrawableItem> items = new ArrayList<>();
+    items.add(new DrawableItem(background.getImageId(), background.getX(), background.getY()));
+    for (Platforms platform : platforms) {
+      items.add(new DrawableItem(platform.getImageId(), platform.getX(), platform.getY()));
+    }
+    if (door != null) {
+      items.add(new DrawableItem(door.getImageId(), door.getX(), door.getY()));
+    }
+    for (Enemy enemy : enemyList) {
+      if (!enemy.isDead()) {
+        items.add(new DrawableItem(enemy.getImageId(), enemy.getX(), enemy.getY()));
       }
     }
-
     for (InventoryItem item : itemList) {
       if (item.canBeCollected()) {
         items.add(new DrawableItem(item.getImageId(), item.getX(), item.getY()));
       }
     }
-    for(Enemy enemy: enemyList){
-      if(!enemy.isDead()){
-        logger.info(enemy + " health " + enemy.getHealth());
-        items.add(new DrawableItem(enemy.getImageId(), enemy.getX(), enemy.getY()));
+    for (Plant plant : plants) {
+      if (plant.canBeCollected()) {
+        items.add(new DrawableItem(plant.getImageId(), plant.getX(), plant.getY()));
       }
     }
+    items.add(new DrawableItem(player.getImageId(), player.getX(), player.getY()));
 
+    if (isInventoryOpen) {
+      items.add(new DrawableItem(inventory.getImageId(), inventory.getX(), inventory.getY()));
+      for (GameItem item : player.getInventory().getItems()) {
+        items.add(new DrawableItem(item.getImageId(), item.getX(), item.getY()));
+      }
+    }
     return items.toArray(new DrawableItem[0]);
   }
   public void reset() {
-    player.reset();
-    player.setHealth(10);
-    key.setX(900);
-    key.setY(650);
-    key.setCollected(false);
-    plant1.setCollected(false);
-    plant2.setCollected(false);
+  player.reset();
+  player.setHealth(10);
+
+  // Reset all items
+  for (InventoryItem item : itemList) {
+    item.setCollected(false);
+    if (item instanceof Key) {
+      // Reset position,  !!!!better from level file!!!!1
+      item.setX(900);
+      item.setY(650);
+    }
   }
 
+  // Reset plants
+  for (Plant plant : plants) {
+    plant.setCollected(false);
+  }
+
+  // Reset enemy
+  for (Enemy enemy : enemyList) {
+    enemy.reset();
+    enemy.setHealth(5);
+  }
+}
+  public void toggleInventory() {
+    isInventoryOpen = !isInventoryOpen;
+  }
   public Player getPlayer() {
     return player;
   }
@@ -192,22 +187,40 @@ public class Game {
   public List<GameItem> getCollidableObjects(){
     return collidableObjects;
   }
+  public Enemy getMonster() {
+    for (Enemy enemy : enemyList) {
+      if (enemy instanceof Monster) {
+        return enemy;
+      }
+    }
+    return null;
+  }
   public Enemy getSlime() {
-    return slime;
+    for (Enemy enemy : enemyList) {
+      if (enemy instanceof Slime) {
+        return enemy;
+      }
+    }
+    return null;
   }
   public Door getDoor(){
     return door;
   }
-  public Key getKey(){
+  public void setKey(Key key) {
+    this.key = key;
+    addInventoryItem(key);
+  }
+  public Key getKey() {
     return key;
+  }
+  public List<Enemy> getEnemyList() {
+    return enemyList;
   }
   public void setGameState(GameState gameState) {
     this.gameState = gameState;
   }
-  public void toggleInventory() {
-    isInventoryOpen = !isInventoryOpen;
+  public void setDoor(Door door) {
+    this.door = door;
   }
-  public Enemy getMonster() {
-    return monster;
-  }
+
 }

@@ -2,6 +2,7 @@ package cz.cvut.fel.pjv.dungeon_escape.model;
 
 
 import cz.cvut.fel.pjv.dungeon_escape.model.items.Key;
+import cz.cvut.fel.pjv.dungeon_escape.model.items.Weapon;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,12 +11,12 @@ import java.util.Optional;
 public class Inventory {
 
   private final int capacity = 5;
-  private List<GameItem> items = new ArrayList<>();
+  private List<InventoryItem> items = new ArrayList<>();
   private float slotX = 0;
   private float slotY = 0;
   private float slotSize = 40;
 
-  public void addItm(GameItem item){
+  public void addItm(InventoryItem item){
     if( items.size() < capacity ){
       items.add(item);
     }
@@ -27,14 +28,11 @@ public class Inventory {
     }
     updateItemPosition();
   }
-  public List<GameItem> getItems(){
+  public List<InventoryItem> getItems(){
     return items;
   }
-  public boolean hasKey(){
-    return items.stream().anyMatch(item -> item instanceof Key);
-  }
   public boolean useKey() {
-    Optional<GameItem> key = items.stream()
+    Optional<InventoryItem> key = items.stream()
       .filter(item -> item instanceof Key)
       .findFirst();
 
@@ -45,7 +43,14 @@ public class Inventory {
     }
     return false;
   }
-  public void useItem(GameItem item){
+  public boolean hasKey(){
+    return items.stream().anyMatch(item -> item instanceof Key);
+  }
+  public boolean hasWeapon(){
+    return items.stream().anyMatch(item -> item instanceof Weapon);
+  }
+
+  public void useItem(InventoryItem item){
     if (items.contains(item)) {
       // TODO: Logic of using items
       items.remove(item);

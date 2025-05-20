@@ -41,9 +41,6 @@ public class Player extends GameItem {
       isOnGround = false;
     }
   }
-  public void addInventory(GameItem item) {
-    inventory.addItm(item);
-  }
   public void removeInventory(GameItem item) {inventory.removeItm(item);}
   public boolean isOnGround() {
     return isOnGround;
