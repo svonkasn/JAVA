@@ -18,8 +18,13 @@ public class Enemy extends GameItem {
   protected long attackStartTime = 0;
   protected int attackDirection = 1;
 
+  private final double initX;
+  private final double initY;
+
   public Enemy(ImageId imageId, double x, double y) {
     super(imageId, x, y);
+    initX = x;
+    initY = y;
   }
 
   public boolean canAttack() {
@@ -64,5 +69,8 @@ public class Enemy extends GameItem {
   public void setDead(boolean dead) {
     this.dead = dead;
   }
-  public void reset() {}
+  public void reset() {
+    setX(initX);
+    setY(initY);
+  }
 }

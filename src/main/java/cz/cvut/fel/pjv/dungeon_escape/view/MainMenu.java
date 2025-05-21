@@ -72,7 +72,7 @@ public class MainMenu {
   }
 
   private void startNewGame() {
-    game.reset();
+    game.reloadLevel("level1.json");
     controller.setState(GameState.RUNNING);
     primaryStage.setScene(gameScene);
   }

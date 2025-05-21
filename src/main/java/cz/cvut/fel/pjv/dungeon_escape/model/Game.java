@@ -36,11 +36,8 @@ public class Game {
   public Game() {
     player = new Player(ImageId.PLAYER, 0, 0, 10, gravity);
     loadLevel("level1.json");
-    reset();
   }
-  public void nextLevel() {
-    loadLevel("level2.json");
-  }
+
   public void loadLevel(String path) {
     try {
       LevelLoader.loadLevel(this, path);
@@ -156,28 +153,35 @@ public class Game {
   public void reset() {
   player.reset();
   player.setHealth(10);
-
-  // Reset all items
-  for (InventoryItem item : itemList) {
-    item.setCollected(false);
-    if (item instanceof Key) {
-      // Reset position,  !!!!better from level file!!!!1
-      item.setX(900);
-      item.setY(650);
-    }
+  player.getInventory().reset();
+    // Reset all items
+    for (InventoryItem item : itemList) {
+//      System.out.println("Reset item: " + item.getImageId() + " at " + item.getX() + "," + item.getY());
+      item.setCollected(false);
+    item.reset();
   }
-
   // Reset plants
   for (Plant plant : plants) {
     plant.setCollected(false);
+    plant.reset();
   }
-
   // Reset enemy
   for (Enemy enemy : enemyList) {
+    enemy.setHealth(10);
     enemy.reset();
-    enemy.setHealth(5);
   }
 }
+  public void reloadLevel(String path) {
+    itemList.clear();
+    plants.clear();
+    enemyList.clear();
+    collidableObjects.clear();
+    platforms.clear();
+    player.getInventory().reset();
+    loadLevel(path);
+    reset();
+  }
+
   public void toggleInventory() {
     isInventoryOpen = !isInventoryOpen;
   }

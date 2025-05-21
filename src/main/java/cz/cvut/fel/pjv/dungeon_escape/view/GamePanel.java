@@ -117,7 +117,6 @@ public class GamePanel extends Application {
         if (controller.getState() == GameState.RUNNING) {
           controller.setState(GameState.PAUSED);
           controller.saveGame();
-//          mainMenu.up
           mainMenu.show();
         }
         event.consume(); // Stop
@@ -177,6 +176,9 @@ public class GamePanel extends Application {
           controller.update();
           drawItems(canvas, game);
           drawHealth(canvas.getGraphicsContext2D());
+        }
+        if(controller.getState() == GameState.GAME_OVER){
+          mainMenu.show();
         }
       }
     };

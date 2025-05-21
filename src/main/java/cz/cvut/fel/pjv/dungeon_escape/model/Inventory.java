@@ -22,7 +22,7 @@ public class Inventory {
     }
     updateItemPosition();
   }
-  public void removeItm(GameItem item){
+  public void removeItm(InventoryItem item){
     if ( items.size() > 0 ){
       items.remove(item);
     }

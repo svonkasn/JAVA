@@ -3,6 +3,7 @@ package cz.cvut.fel.pjv.dungeon_escape.model.entities;
 import cz.cvut.fel.pjv.dungeon_escape.model.GameItem;
 import cz.cvut.fel.pjv.dungeon_escape.model.ImageId;
 import cz.cvut.fel.pjv.dungeon_escape.model.Inventory;
+import cz.cvut.fel.pjv.dungeon_escape.model.InventoryItem;
 
 public class Player extends GameItem {
   private final double gravity;
@@ -41,7 +42,8 @@ public class Player extends GameItem {
       isOnGround = false;
     }
   }
-  public void removeInventory(GameItem item) {inventory.removeItm(item);}
+  public void removeInventory(InventoryItem item) {inventory.removeItm(item);}
+  public void addInventory(InventoryItem item) {inventory.addItm(item);}
   public boolean isOnGround() {
     return isOnGround;
   }

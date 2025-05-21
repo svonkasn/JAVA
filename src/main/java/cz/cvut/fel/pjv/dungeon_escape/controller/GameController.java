@@ -73,8 +73,7 @@ public class GameController {
           player.getInventory().useKey();
           player.removeInventory(game.getKey());
           logger.info("Door opened");
-          game.nextLevel();
-          // TODO: game.nextLevel()
+          game.reloadLevel("level2.json");
         }
       }
     }
