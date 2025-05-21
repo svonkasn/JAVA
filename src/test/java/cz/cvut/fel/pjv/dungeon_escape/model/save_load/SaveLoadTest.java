@@ -61,7 +61,7 @@ class SaveLoadTest {
   }
 
   @Test
-  void testSaveGameCreatesFile() {
+  void saveGameCreatesFile() {
     // Simulate player's state to save
     when(player.getX()).thenReturn(100.0);
     when(player.getY()).thenReturn(200.0);
@@ -82,7 +82,7 @@ class SaveLoadTest {
   }
 
   @Test
-  void testLoadGameRestoresState() throws Exception {
+  void loadGameRestoresState() throws Exception {
     // Simulate game state and write it as JSON to the save file
     GameStateData data = new GameStateData();
     data.setPlayerX(123);

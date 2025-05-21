@@ -17,6 +17,10 @@ import java.util.List;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
+/**
+ * The Game class represents the core game state and logic.
+ * It manages all game entities, physics, collisions, and rendering.
+ */
 public class Game {
   private static final Logger logger = Logger.getLogger(Game.class.getName());
 
@@ -70,11 +74,20 @@ public class Game {
   public void addCollidableObject(GameItem gameItem){
     collidableObjects.add(gameItem);
   }
+  /**
+   * Checks if the player is near a crafting plant (PLANT_BIG).
+   * The proximity is determined by a 50x50 unit area around the plant.
+   *
+   * @return true if player is within crafting range of a big plant, false otherwise
+   */
   public boolean isNearCraftingPlant() {
     for (Plant plant : plants) {
       if (plant.getImageId().equals(ImageId.PLANT_BIG)) {
+        // Calculate horizontal and vertical distances to plant
         double dx = Math.abs(player.getX() - plant.getX());
         double dy = Math.abs(player.getY() - plant.getY());
+
+        // Check if player is within 50 units in both axes
         if (dx < 50 && dy < 50) {
           return true;
         }
@@ -82,37 +95,40 @@ public class Game {
     }
     return false;
   }
+  /**
+   * Attempts to craft a potion if conditions are met:
+   * 1. Player is near a crafting plant (PLANT_BIG)
+   * 2. Player has at least 2 plant items in inventory
+   *
+   * Consumes 2 plants from inventory and adds 1 potion
+   *
+   * @return true if potion was successfully crafted, false otherwise
+   */
   public boolean craftPotion() {
     if (!isNearCraftingPlant()) return false;
 
+    // Filter inventory for plant items and take first 2
     List<InventoryItem> inventoryItems = player.getInventory().getItems();
     List<Plant> flowers = inventoryItems.stream()
-      .filter(item -> item instanceof Plant)
-      .map(item -> (Plant) item)
-      .limit(2)
+      .filter(item -> item instanceof Plant)  // Only plants
+      .map(item -> (Plant) item)             // Cast to Plant
+      .limit(2)                              // Take max 2 plants
       .collect(Collectors.toList());
 
-    if (flowers.size() < 2) return false;
+    if (flowers.size() < 2) return false;  // Not enough plants
 
-    // Delete plants from inventory
+    // Remove used plants from inventory
     for (Plant plant : flowers) {
       player.getInventory().removeItm(plant);
     }
 
-    // Add potion
+    // Create and add new potion
     Potion potion = new Potion(ImageId.POTION, 0, 0); // Position for Inventory
     player.getInventory().addItm(potion);
     logger.info("Crafted potion!");
     return true;
   }
-  public void updatePhysics(){
-    if(gameState == GameState.RUNNING){
-      player.update();
-      for(Enemy enemy: enemyList){
-        enemy.update(player);
-      }
-    }
-  }
+
   public void damageEnemies() {
     List<Enemy> toRemove = new ArrayList<>();
 
@@ -130,66 +146,102 @@ public class Game {
     }
   }
   // Should be in GameController...?
-  public void checkLevelBounds(){
+  /**
+   * Checks and enforces level boundaries to prevent player from going out of bounds.
+   * Handles collisions with:
+   * - Bottom (ground level)
+   * - Left/right walls
+   * - Top ceiling
+   * Adjusts player position and physics state accordingly.
+   */
+  public void checkLevelBounds() {
     BoundingBox playerBounds = player.getBoundingBox();
     BoundingBox backgroundBounds = background.getBoundingBox();
-//    System.out.println(backgroundBounds.getHeight() + " " + backgroundBounds.getWidth());
-    // check down
+
+    // Bottom boundary check (prevent falling through floor)
     if (!player.isOnGround()) {
       if (playerBounds.getMaxY() >= backgroundBounds.getMaxY()) {
         player.setY(backgroundBounds.getMaxY() - playerBounds.getHeight());
-        player.setOnGround(true);
+        player.setOnGround(true);  // Player lands on ground
       }
     }
 
-    // check wall
+    // Side boundaries check (left and right walls)
     if (playerBounds.getMinX() <= backgroundBounds.getMinX()) {
-      player.setX(backgroundBounds.getMinX());
+      player.setX(backgroundBounds.getMinX());  // Stop at left edge
     } else if (playerBounds.getMaxX() >= backgroundBounds.getMaxX()) {
-      player.setX((backgroundBounds.getMaxX() - playerBounds.getWidth()));
+      player.setX((backgroundBounds.getMaxX() - playerBounds.getWidth()));  // Stop at right edge
     }
 
-    // check top
+    // Top boundary check (ceiling)
     if (playerBounds.getMinY() <= backgroundBounds.getMinY()) {
       player.setY((int)backgroundBounds.getMinY());
-      player.setSpeed(0);
+      player.setSpeed(0);  // Stop vertical movement when hitting ceiling
     }
   }
   public void movePlayer(boolean left, boolean right, boolean jump) {
     player.move(left, right, jump);
   }
+  /**
+   * Gathers all drawable game items in proper render order:
+   * 1. Background
+   * 2. Platforms
+   * 3. Door
+   * 4. Enemies
+   * 5. Collectible items
+   * 6. Player
+   * 7. Inventory (if open)
+   *
+   * @return Array of DrawableItems in render order
+   */
   public DrawableItem[] getItemsToDraw() {
     List<DrawableItem> items = new ArrayList<>();
+
+    // Background first
     items.add(new DrawableItem(background.getImageId(), background.getX(), background.getY()));
+
+    // Platforms
     for (Platforms platform : platforms) {
       items.add(new DrawableItem(platform.getImageId(), platform.getX(), platform.getY()));
     }
+
+    // Door
     if (door != null) {
       items.add(new DrawableItem(door.getImageId(), door.getX(), door.getY()));
     }
+
+    // Active enemies
     for (Enemy enemy : enemyList) {
       if (!enemy.isDead()) {
         items.add(new DrawableItem(enemy.getImageId(), enemy.getX(), enemy.getY()));
       }
     }
+
+    // Collectible items
     for (InventoryItem item : itemList) {
       if (item.canBeCollected()) {
         items.add(new DrawableItem(item.getImageId(), item.getX(), item.getY()));
       }
     }
+
+    // Plants
     for (Plant plant : plants) {
       if (plant.canBeCollected()) {
         items.add(new DrawableItem(plant.getImageId(), plant.getX(), plant.getY()));
       }
     }
+
+    // Player (above most items but below UI)
     items.add(new DrawableItem(player.getImageId(), player.getX(), player.getY()));
 
+    // Inventory UI (if open)
     if (isInventoryOpen) {
       items.add(new DrawableItem(inventory.getImageId(), inventory.getX(), inventory.getY()));
       for (GameItem item : player.getInventory().getItems()) {
         items.add(new DrawableItem(item.getImageId(), item.getX(), item.getY()));
       }
     }
+
     return items.toArray(new DrawableItem[0]);
   }
   public void reset() {
@@ -213,17 +265,31 @@ public class Game {
     enemy.reset();
   }
 }
+  /**
+   * Reloads a level from file and resets all game entities.
+   * Clears all entity lists before loading the new level.
+   *
+   * @param path Path to the level JSON file
+   */
   public void reloadLevel(String path) {
-//    itemList.clear();
+    // Clear all entity lists
     plants.clear();
     enemyList.clear();
     collidableObjects.clear();
     platforms.clear();
-//    player.getInventory().reset();
+
+    // Load new level and reset state
     loadLevel(path);
     reset();
   }
-
+  public void updatePhysics(){
+    if(gameState == GameState.RUNNING){
+      player.update();
+      for(Enemy enemy: enemyList){
+        enemy.update(player);
+      }
+    }
+  }
   public void toggleInventory() {
     isInventoryOpen = !isInventoryOpen;
   }

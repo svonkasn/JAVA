@@ -2,14 +2,15 @@ package cz.cvut.fel.pjv.dungeon_escape.controller;
 
 import cz.cvut.fel.pjv.dungeon_escape.model.*;
 import cz.cvut.fel.pjv.dungeon_escape.model.entities.Player;
-import cz.cvut.fel.pjv.dungeon_escape.model.environment.Plant;
 import javafx.geometry.BoundingBox;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import java.io.*;
 import java.util.Iterator;
 import java.util.logging.Logger;
 
 
+/**
+ * The GameController class manages the game logic, input handling, and interactions
+ * between game entities. It acts as the intermediary between the model and input systems.
+ */
 public class GameController {
   private static final Logger logger = Logger.getLogger(Game.class.getName());
   private Game game;
@@ -17,10 +18,19 @@ public class GameController {
   private GameState state = GameState.RUNNING;
   private boolean wasInventoryToggled = false;
 
-
+  /**
+   * Constructs a GameController with the specified game instance.
+   *
+   * @param game The Game instance to be controlled by this controller
+   */
   public GameController(Game game) {
     this.game = game;
   }
+
+  /**
+   * Updates the game state by processing input, physics, and interactions.
+   * This method should be called every game tick.
+   */
   public void update() {
     if (inputHandler.shouldToggleInventory() && !wasInventoryToggled) {
       game.toggleInventory();
@@ -34,12 +44,15 @@ public class GameController {
       game.updatePhysics();
       handleInteractions();
     }
-//    System.out.println(game.getPlayer());
     if(inputHandler.isAttack() && game.getPlayer().getInventory().hasWeapon()) {
       game.damageEnemies();
       logger.info("Attacking by player");
     }
   }
+
+  /**
+   * Handles player input by translating input states to player movement.
+   */
   private void handleInput() {
     game.movePlayer(
       inputHandler.isLeftPressed(),
@@ -48,17 +61,25 @@ public class GameController {
     );
   }
 
+  /**
+   * Manages all game interactions including:
+   * - Player-object collisions
+   * - Collectible item pickup
+   * - Door interactions
+   * - Health checks
+   * - Crafting system
+   */
   private void handleInteractions(){
     Player player = game.getPlayer();
     BoundingBox playerBounds = player.getBoundingBox();
     game.checkLevelBounds();
 
-//    Collision ... levels
+    // Collision ... levels
     for (GameItem object : game.getCollidableObjects()) {
       checkObjectCollision(player, object);
     }
 
-//    check health. should not be there
+    // check health. should not be there
     if(player.getHealth() == 0 && state == GameState.RUNNING){
       setState(GameState.GAME_OVER);
     }
@@ -74,11 +95,17 @@ public class GameController {
         }
       }
     }
-//    Crafting
+    // Crafting
     if(game.isNearCraftingPlant() && inputHandler.isCraftingKeyPressed()){
       game.craftPotion();
     }
   }
+
+  /**
+   * Checks for and processes collectible items that intersect with the player.
+   *
+   * @param game The current game instance containing items to check
+   */
   private void checkCollectibles(Game game) {
     Iterator<InventoryItem> iterator = game.getItemList().iterator();
     while (iterator.hasNext()) {
@@ -93,6 +120,14 @@ public class GameController {
       }
     }
   }
+
+  /**
+   * Handles collision response between the player and a game object.
+   * Adjusts player position based on collision side to prevent overlap.
+   *
+   * @param player The player entity
+   * @param object The game object to check collision against
+   */
   private void checkObjectCollision(Player player, GameItem object) {
     BoundingBox playerBounds = player.getBoundingBox();
     BoundingBox objectBounds = object.getBoundingBox();
@@ -103,8 +138,6 @@ public class GameController {
       double overlapRight = objectBounds.getMaxX() - playerBounds.getMinX();
       double overlapTop = playerBounds.getMaxY() - objectBounds.getMinY();
       double overlapBottom = objectBounds.getMaxY() - playerBounds.getMinY();
-//      System.out.println("Left " + overlapLeft + " Right" + overlapRight);
-//      System.out.println("Top " + overlapTop + " Bottom" + overlapBottom);
 
       // magic math
       double minOverlap = Math.min(Math.min(overlapLeft, overlapRight),

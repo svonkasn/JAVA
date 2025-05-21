@@ -17,17 +17,31 @@ import cz.cvut.fel.pjv.dungeon_escape.model.items.Weapon;
 import java.io.File;
 import java.io.IOException;
 
-
+/**
+ * The LevelLoader class handles loading game levels from JSON files.
+ * It parses level data and initializes all game objects including platforms,
+ * items, enemies, and player starting position.
+ */
 public class LevelLoader {
+
+  /**
+   * Loads a game level from a JSON file and initializes the game state.
+   * Clears existing game objects before loading new ones.
+   *
+   * @param game The Game instance to initialize with level data
+   * @param filePath Path to the JSON level file
+   * @throws IOException If there's an error reading the level file
+   */
   public static void loadLevel(Game game, String filePath) throws IOException {
     ObjectMapper mapper = new ObjectMapper();
     JsonNode root = mapper.readTree(new File(filePath));
 
+    // Clear existing game objects
     game.getCollidableObjects().clear();
     game.getItemList().clear();
     game.getEnemyList().clear();
 
-    // Platforms
+    // Load platforms
     for (JsonNode platform : root.get("platforms")) {
       Platforms platforms = new Platforms(
         ImageId.valueOf(platform.get("imageId").asText()),
@@ -37,7 +51,7 @@ public class LevelLoader {
       game.addPlatform(platforms);
     }
 
-    // Items
+    // Load items
     for (JsonNode item : root.get("items")) {
       String type = item.get("type").asText();
       ImageId imageId = ImageId.valueOf(item.get("imageId").asText());
@@ -58,7 +72,7 @@ public class LevelLoader {
       if (object != null) game.addInventoryItem(object);
     }
 
-    // Plants
+    // Load plants (optional)
     if(root.get("plants") != null){
       for (JsonNode plant : root.get("plants")) {
         Plant plants = new Plant(
@@ -70,7 +84,7 @@ public class LevelLoader {
       }
     }
 
-    // Enemies
+    // Load enemies
     for (JsonNode enemy : root.get("enemies")) {
       String type = enemy.get("type").asText();
       ImageId imageId = ImageId.valueOf(enemy.get("imageId").asText());
@@ -90,14 +104,14 @@ public class LevelLoader {
       if (enemy1 != null) game.addEnemies(enemy1);
     }
 
-    // Door
+    // Load door
     JsonNode door = root.get("door");
     Door doors = new Door(ImageId.valueOf(door.get("imageId").asText()),
       door.get("x").asInt(),
       door.get("y").asInt());
     game.setDoor(doors);
 
-    // playerStart
+    // Set player starting position
     JsonNode playerStart = root.get("playerStart");
     game.getPlayer().setX(playerStart.get("x").asInt());
     game.getPlayer().setY(playerStart.get("y").asInt());

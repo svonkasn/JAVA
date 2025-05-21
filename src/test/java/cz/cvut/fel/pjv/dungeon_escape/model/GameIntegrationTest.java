@@ -21,7 +21,7 @@ public class GameIntegrationTest {
   }
 
   @Test
-  public void testPlayerAttacksEnemy() {
+  public void playerAttacksEnemy() {
     Enemy enemy = new Enemy(ImageId.MONSTER, 100, 100);
     double initialHealth = enemy.getHealth();
     enemy.takeDamage(3);
@@ -29,7 +29,7 @@ public class GameIntegrationTest {
   }
 
   @Test
-  public void testEnemyAttacksPlayer() {
+  public void enemyAttacksPlayer() {
     Enemy enemy = new Enemy(ImageId.MONSTER, 100, 100);
     double initialHealth = player.getHealth();
     enemy.attack(player);
@@ -37,7 +37,7 @@ public class GameIntegrationTest {
   }
 
   @Test
-  public void testMonsterPatrols() {
+  public void monsterPatrols() {
     Monster monster = new Monster(ImageId.MONSTER, 300, 100);
     double initialX = monster.getX();
 
@@ -49,14 +49,14 @@ public class GameIntegrationTest {
   }
 
   @Test
-  public void testPlayerJumpOnlyFromGround() {
+  public void playerJumpOnlyFromGround() {
     player.setOnGround(true);
     player.move(false, false, true); // Try jumping
     assertFalse(player.isOnGround()); // Should leave the ground
   }
 
   @Test
-  public void testPlayerAffectedByGravity() {
+  public void playerAffectedByGravity() {
     player.setOnGround(false);
     double beforeY = player.getY();
     player.update();
@@ -64,7 +64,7 @@ public class GameIntegrationTest {
   }
 
   @Test
-  void testCraftPotionSuccess() {
+  void craftPotionSuccess() {
     // Add a nearby large crafting plant
     Plant craftingPlant = new Plant(ImageId.PLANT_BIG, 0, 0);
     game.addPlant(craftingPlant);
@@ -88,7 +88,7 @@ public class GameIntegrationTest {
   }
 
   @Test
-  void testResetRestoresGameState() {
+  void resetRestoresGameState() {
     // Add enemy and plant to game
     Enemy enemy = new Monster(ImageId.MONSTER, 100, 100);
     Plant plant = new Plant(ImageId.PLANT_GREEN, 200, 200);
@@ -115,7 +115,7 @@ public class GameIntegrationTest {
   }
 
   @Test
-  void testToggleInventoryAffectsItemsToDraw() {
+  void toggleInventoryAffectsItemsToDraw() {
     int withoutInventory = game.getItemsToDraw().length;
 
     game.toggleInventory();
