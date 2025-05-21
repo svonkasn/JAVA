@@ -1,7 +1,11 @@
-package cz.cvut.fel.pjv.dungeon_escape.model;
+package cz.cvut.fel.pjv.dungeon_escape.model.save_load;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import cz.cvut.fel.pjv.dungeon_escape.model.Game;
+import cz.cvut.fel.pjv.dungeon_escape.model.ImageId;
+import cz.cvut.fel.pjv.dungeon_escape.model.InventoryItem;
+import cz.cvut.fel.pjv.dungeon_escape.model.Platforms;
 import cz.cvut.fel.pjv.dungeon_escape.model.entities.Enemy;
 import cz.cvut.fel.pjv.dungeon_escape.model.entities.Monster;
 import cz.cvut.fel.pjv.dungeon_escape.model.entities.Slime;

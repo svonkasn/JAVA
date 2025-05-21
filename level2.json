@@ -1,0 +1,16 @@
+{
+  "platforms": [
+    {"imageId": "PLATFORM", "x": -35, "y": 200},
+    {"imageId": "PLATFORM", "x": 650, "y": 370},
+    {"imageId": "GROUND", "x": 0, "y": 690}
+  ],
+  "items": [
+    {"type": "Key", "imageId": "KEY", "x": 900, "y": 650, "id": "key1"}
+  ],
+  "enemies": [
+    {"type": "Slime", "imageId": "SLIME", "x": 150, "y": 165},
+    {"type": "Monster", "imageId": "MONSTER", "x": 100, "y": 600}
+  ],
+  "door": {"imageId": "DOOR", "x": 10, "y": 80},
+  "playerStart": {"x": 0, "y": 0}
+}

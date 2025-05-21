@@ -4,6 +4,7 @@ import cz.cvut.fel.pjv.dungeon_escape.controller.GameController;
 import cz.cvut.fel.pjv.dungeon_escape.controller.InputHandler;
 import cz.cvut.fel.pjv.dungeon_escape.model.Game;
 import cz.cvut.fel.pjv.dungeon_escape.model.GameState;
+import cz.cvut.fel.pjv.dungeon_escape.model.save_load.SaveLoad;
 import javafx.application.Platform;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -78,7 +79,8 @@ public class MainMenu {
   }
 
   private void continueGame() {
-    if(controller.hasSavedGame() && controller.loadGame()){
+    SaveLoad saveLoad = new SaveLoad(game);
+    if(saveLoad.hasSavedGame() && saveLoad.loadGame()){
       controller.setState(GameState.RUNNING);
       primaryStage.setScene(gameScene);
     }

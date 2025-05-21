@@ -133,45 +133,6 @@ public class GameController {
       }
     }
   }
-  public void saveGame() {
-    Player player = game.getPlayer();
-//    System.out.println("player: " + player.getX() +  ", " + player.getY() +  ", " + player.getHealth() );
-//    System.out.println(game.isKeyTaken());
-    GameStateData gameData = new GameStateData();
-
-    gameData.setPlayerX(player.getX());
-    gameData.setPlayerY(player.getY());
-    gameData.setHealthPlayer(player.getHealth());
-    gameData.setKeyTaken(game.getKey().isCollected());
-    try {
-      ObjectMapper om = new ObjectMapper();
-      om.writeValue(new File(SAVE_FILE), gameData);
-      logger.info("Game saved successfully");
-    } catch (IOException e) {
-      logger.info("Failed to save game:" + e.getMessage());
-    }
-  }
-
-  public boolean loadGame() {
-    try {
-      ObjectMapper om = new ObjectMapper();
-      GameStateData gameData = om.readValue(new File(SAVE_FILE), GameStateData.class);
-      Player player = game.getPlayer();
-      player.setX(gameData.getPlayerX());
-      player.setY(gameData.getPlayerY());
-      player.setHealth(gameData.getHealthPlayer());
-      game.getKey().setCollected(gameData.isKeyTaken());
-      logger.info("Game loaded successfully");
-      return true;
-
-    } catch (IOException e) {
-      logger.info("Failed to load game:" + e.getMessage());
-      return false;
-    }
-  }
-  public boolean hasSavedGame() {
-    return new File(SAVE_FILE).exists();
-  }
   public void setState(GameState gameState) {
     this.state = gameState;
     game.setGameState(state);

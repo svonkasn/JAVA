@@ -8,6 +8,7 @@ import cz.cvut.fel.pjv.dungeon_escape.model.GameState;
 import cz.cvut.fel.pjv.dungeon_escape.model.ImageId;
 import cz.cvut.fel.pjv.dungeon_escape.model.entities.Enemy;
 import cz.cvut.fel.pjv.dungeon_escape.model.entities.Monster;
+import cz.cvut.fel.pjv.dungeon_escape.model.save_load.SaveLoad;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.scene.Scene;
@@ -114,9 +115,10 @@ public class GamePanel extends Application {
     // ESC input
     gameScene.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
       if (event.getCode() == KeyCode.ESCAPE) {
+        SaveLoad saveLoad = new SaveLoad(game);
         if (controller.getState() == GameState.RUNNING) {
           controller.setState(GameState.PAUSED);
-          controller.saveGame();
+          saveLoad.saveGame();
           mainMenu.show();
         }
         event.consume(); // Stop
