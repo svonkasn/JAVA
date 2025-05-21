@@ -4,7 +4,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 
 public class InputHandler {
-  private boolean left, right, jump, inventoryKeyPressed, attack;
+  private boolean left, right, jump, inventoryKeyPressed, attack, craftingKeyPressed;
   private boolean inventoryToggleProcessed;
 
 
@@ -27,7 +27,6 @@ public class InputHandler {
     });
 //    scene.setOnKeyPressed(event -> handleInput(event, true));
 //    scene.setOnKeyReleased(event -> handleInput(event, false));
-
   }
 
   private void handleInput(KeyEvent event, boolean isPressed) {
@@ -36,6 +35,7 @@ public class InputHandler {
       case D -> right = isPressed;
       case SPACE -> jump = isPressed;
       case ENTER -> attack = isPressed;
+      case E -> craftingKeyPressed = isPressed;
     }
   }
 
@@ -47,5 +47,8 @@ public class InputHandler {
   }
   public boolean isAttack() {
     return attack;
+  }
+  public boolean isCraftingKeyPressed() {
+    return craftingKeyPressed;
   }
 }

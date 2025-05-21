@@ -2,6 +2,7 @@ package cz.cvut.fel.pjv.dungeon_escape.controller;
 
 import cz.cvut.fel.pjv.dungeon_escape.model.*;
 import cz.cvut.fel.pjv.dungeon_escape.model.entities.Player;
+import cz.cvut.fel.pjv.dungeon_escape.model.environment.Plant;
 import javafx.geometry.BoundingBox;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.*;
@@ -76,6 +77,10 @@ public class GameController {
           game.reloadLevel("level2.json");
         }
       }
+    }
+//    Crafting
+    if(game.isNearCraftingPlant() && inputHandler.isCraftingKeyPressed()){
+      game.craftPotion();
     }
   }
   private void checkCollectibles(Game game) {

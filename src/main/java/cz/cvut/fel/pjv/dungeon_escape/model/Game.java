@@ -7,12 +7,14 @@ import cz.cvut.fel.pjv.dungeon_escape.model.entities.Slime;
 import cz.cvut.fel.pjv.dungeon_escape.model.environment.Door;
 import cz.cvut.fel.pjv.dungeon_escape.model.environment.Plant;
 import cz.cvut.fel.pjv.dungeon_escape.model.items.Key;
+import cz.cvut.fel.pjv.dungeon_escape.model.items.Potion;
 import javafx.geometry.BoundingBox;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 public class Game {
   private static final Logger logger = Logger.getLogger(Game.class.getName());
@@ -50,6 +52,10 @@ public class Game {
     addCollidableObject(enemy);
   }
   public void addPlant(Plant plant) {
+    if(plant.getImageId().equals(ImageId.PLANT_BIG)){
+      plants.add(plant);
+      return;
+    }
     plants.add(plant);
     addInventoryItem(plant);
   }
@@ -62,6 +68,41 @@ public class Game {
   }
   public void addCollidableObject(GameItem gameItem){
     collidableObjects.add(gameItem);
+  }
+  public boolean isNearCraftingPlant() {
+    for (Plant plant : plants) {
+      if (plant.getImageId().equals(ImageId.PLANT_BIG)) {
+        double dx = Math.abs(player.getX() - plant.getX());
+        double dy = Math.abs(player.getY() - plant.getY());
+        if (dx < 50 && dy < 50) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+  public boolean craftPotion() {
+    if (!isNearCraftingPlant()) return false;
+
+    List<InventoryItem> inventoryItems = player.getInventory().getItems();
+    List<Plant> flowers = inventoryItems.stream()
+      .filter(item -> item instanceof Plant)
+      .map(item -> (Plant) item)
+      .limit(2)
+      .collect(Collectors.toList());
+
+    if (flowers.size() < 2) return false;
+
+    // Delete plants from inventory
+    for (Plant plant : flowers) {
+      player.getInventory().removeItm(plant);
+    }
+
+    // Add potion
+    Potion potion = new Potion(ImageId.POTION, 0, 0); // Position for Inventory
+    player.getInventory().addItm(potion);
+    logger.info("Crafted potion!");
+    return true;
   }
   public void updatePhysics(){
     if(gameState == GameState.RUNNING){

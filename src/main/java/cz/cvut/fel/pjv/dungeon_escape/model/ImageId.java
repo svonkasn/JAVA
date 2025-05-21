@@ -16,7 +16,8 @@ public enum ImageId {
   PLANT_BLUE("plant1.png"),
   PLANT_GREEN("plant2.png"),
   PLANT_BIG("placeToCraft.png"),
-  WEAPON("weapon.png");
+  WEAPON("weapon.png"),
+  POTION("potion.png");
 
   private final String fileName;
   private final Image image;
