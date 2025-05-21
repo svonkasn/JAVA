@@ -55,14 +55,15 @@ public class LevelLoader {
     }
 
     // Plants
-    for (JsonNode plant : root.get("plants")) {
-      Plant plants = new Plant(
-        ImageId.valueOf(plant.get("imageId").asText()),
-        plant.get("x").asInt(),
-        plant.get("y").asInt()
-      );
-
-      game.addPlant(plants);
+    if(root.get("plants") != null){
+      for (JsonNode plant : root.get("plants")) {
+        Plant plants = new Plant(
+          ImageId.valueOf(plant.get("imageId").asText()),
+          plant.get("x").asInt(),
+          plant.get("y").asInt()
+        );
+        game.addPlant(plants);
+      }
     }
 
     // Enemies

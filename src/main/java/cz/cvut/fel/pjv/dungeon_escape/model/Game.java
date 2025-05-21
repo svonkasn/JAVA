@@ -194,7 +194,7 @@ public class Game {
   public void reset() {
   player.reset();
   player.setHealth(10);
-  player.getInventory().reset();
+//  player.getInventory().reset();
     // Reset all items
     for (InventoryItem item : itemList) {
 //      System.out.println("Reset item: " + item.getImageId() + " at " + item.getX() + "," + item.getY());
@@ -213,12 +213,12 @@ public class Game {
   }
 }
   public void reloadLevel(String path) {
-    itemList.clear();
+//    itemList.clear();
     plants.clear();
     enemyList.clear();
     collidableObjects.clear();
     platforms.clear();
-    player.getInventory().reset();
+//    player.getInventory().reset();
     loadLevel(path);
     reset();
   }
