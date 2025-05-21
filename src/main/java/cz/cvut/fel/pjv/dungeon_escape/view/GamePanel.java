@@ -58,9 +58,7 @@ public class GamePanel extends Application {
     mainMenu.setGameScene(gameScene);
     stage.setTitle("Dungeon Escape");
     stage.show();
-
   }
-
   private void drawMonsterAttackEffect(GraphicsContext gc, Enemy monster) {
     if (!monster.isAttacking()) return;
 
@@ -148,7 +146,6 @@ public class GamePanel extends Application {
       drawMonsterAttackEffect(gc, monster);
     }
   }
-
   private void drawHealth(GraphicsContext gc) {
     double maxHealth = 10;
     double currentHealth = game.getPlayer().getHealth();
@@ -168,8 +165,6 @@ public class GamePanel extends Application {
       gc.setFill(Color.RED);
     gc.fillRect(x, y, barWidth * healthRatio, barHeight);
   }
-
-
   private void startGameLoop(Canvas canvas, Game game, GameController controller) {
     AnimationTimer gameLoop = new AnimationTimer() {
       @Override

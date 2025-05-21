@@ -17,13 +17,9 @@ public class GameController {
   private GameState state = GameState.RUNNING;
   private boolean wasInventoryToggled = false;
 
-  private static final String SAVE_FILE = "savegame.json";
 
   public GameController(Game game) {
     this.game = game;
-  }
-  public void setInputHandler(InputHandler inputHandler) {
-    this.inputHandler = inputHandler;
   }
   public void update() {
     if (inputHandler.shouldToggleInventory() && !wasInventoryToggled) {
@@ -136,6 +132,9 @@ public class GameController {
   public void setState(GameState gameState) {
     this.state = gameState;
     game.setGameState(state);
+  }
+  public void setInputHandler(InputHandler inputHandler) {
+    this.inputHandler = inputHandler;
   }
   public GameState getState() {
     return state;

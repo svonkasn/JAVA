@@ -29,7 +29,7 @@ public class Monster extends Enemy {
     } else
       patrol();
 
-    if (System.currentTimeMillis() - attackStartTime > 1000) {
+    if (isAttacking && System.currentTimeMillis() - attackStartTime > 1000) {
       isAttacking = false;
     }
 

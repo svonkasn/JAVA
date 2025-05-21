@@ -34,10 +34,11 @@ public class Enemy extends GameItem {
     if (canAttack()) {
       player.getDamage(1);
       lastAttackTime = System.nanoTime();
-      isAttacking = true;
-      attackStartTime = System.currentTimeMillis();
+      if (!isAttacking) {
+        isAttacking = true;
+        attackStartTime = System.currentTimeMillis();
+      }
     }
-
   }
   public void takeDamage(double damage) {
      health -= damage;
