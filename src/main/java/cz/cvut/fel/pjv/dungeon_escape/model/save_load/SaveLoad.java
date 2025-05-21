@@ -12,11 +12,14 @@ import java.util.logging.Logger;
 
 public class SaveLoad {
   private static final Logger logger = Logger.getLogger(GamePanel.class.getName());
-  private static final String SAVE_FILE = "savegame.json";
-
+  private final String saveFile;
   Game game;
   public SaveLoad(Game game) {
+    this(game, "savegame.json"); // default
+  }
+  public SaveLoad(Game game, String saveFile) {
     this.game = game;
+    this.saveFile = saveFile;
   }
   public void saveGame() {
     Player player = game.getPlayer();
@@ -28,7 +31,7 @@ public class SaveLoad {
     gameData.setKeyTaken(game.getKey().isCollected());
     try {
       ObjectMapper om = new ObjectMapper();
-      om.writeValue(new File(SAVE_FILE), gameData);
+      om.writeValue(new File(saveFile), gameData);
       logger.info("Game saved successfully");
     } catch (IOException e) {
       logger.info("Failed to save game:" + e.getMessage());
@@ -37,7 +40,7 @@ public class SaveLoad {
   public boolean loadGame() {
     try {
       ObjectMapper om = new ObjectMapper();
-      GameStateData gameData = om.readValue(new File(SAVE_FILE), GameStateData.class);
+      GameStateData gameData = om.readValue(new File(saveFile), GameStateData.class);
       Player player = game.getPlayer();
       player.setX(gameData.getPlayerX());
       player.setY(gameData.getPlayerY());
@@ -52,6 +55,6 @@ public class SaveLoad {
     }
   }
   public boolean hasSavedGame() {
-    return new File(SAVE_FILE).exists();
+    return new File(saveFile).exists();
   }
 }

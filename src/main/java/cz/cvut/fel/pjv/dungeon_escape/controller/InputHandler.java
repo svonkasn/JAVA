@@ -7,8 +7,6 @@ public class InputHandler {
   private boolean left, right, jump, inventoryKeyPressed, attack, craftingKeyPressed;
   private boolean inventoryToggleProcessed;
 
-
-
   public InputHandler(Scene scene) {
     scene.setOnKeyPressed(event -> {
       if (event.getCode() == KeyCode.Q && !inventoryToggleProcessed) {
@@ -28,7 +26,6 @@ public class InputHandler {
 //    scene.setOnKeyPressed(event -> handleInput(event, true));
 //    scene.setOnKeyReleased(event -> handleInput(event, false));
   }
-
   private void handleInput(KeyEvent event, boolean isPressed) {
     switch (event.getCode()) {
       case A -> left = isPressed;

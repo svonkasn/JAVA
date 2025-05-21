@@ -13,7 +13,7 @@ public class Player extends GameItem {
   private Inventory inventory;
 
 
-  public Player(ImageId imageId, int x, int y, int health, double gravity) {
+  public Player(ImageId imageId, int x, int y, double health, double gravity) {
     super(imageId, x, y);
     this.gravity = gravity;
     this.health = health;

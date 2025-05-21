@@ -9,6 +9,7 @@ import cz.cvut.fel.pjv.dungeon_escape.model.environment.Plant;
 import cz.cvut.fel.pjv.dungeon_escape.model.items.Key;
 import cz.cvut.fel.pjv.dungeon_escape.model.items.Potion;
 import cz.cvut.fel.pjv.dungeon_escape.model.save_load.LevelLoader;
+import javafx.beans.value.ObservableBooleanValue;
 import javafx.geometry.BoundingBox;
 
 import java.io.IOException;
