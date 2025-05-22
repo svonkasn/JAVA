@@ -2,7 +2,10 @@ package cz.cvut.fel.pjv.dungeon_escape.model;
 
 import javafx.scene.image.Image;
 import javafx.scene.image.PixelReader;
-
+/**
+ * Contains all game images with their resource paths and loaded Image objects.
+ * Provides easy access to game assets with automatic image loading.
+ */
 public enum ImageId {
   BGR("background.png"),
   PLAYER("player2.png"),
@@ -23,7 +26,10 @@ public enum ImageId {
   private final Image image;
   private double width;
   private double height;
-
+  /**
+   * Creates enum value and loads corresponding image from resources.
+   * @param fileName Image file in resources folder
+   */
   ImageId(String fileName) {
     this.fileName = fileName;
     this.image = new Image(getClass().getResourceAsStream("/" + fileName));

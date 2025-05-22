@@ -56,6 +56,7 @@ public class SaveLoad {
     gameData.setHealthPlayer(player.getHealth());
     gameData.setKeyTaken(game.getKey().isCollected());
 
+
     try {
       ObjectMapper om = new ObjectMapper();
       om.writeValue(new File(saveFile), gameData);

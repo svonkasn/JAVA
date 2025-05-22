@@ -27,7 +27,10 @@ import java.util.EnumMap;
 import java.util.Map;
 import java.util.logging.Logger;
 
-
+/**
+ * Main game panel handling rendering, input, and game loop management.
+ * Extends JavaFX Application to serve as the game's main window.
+ */
 public class GamePanel extends Application {
   private static final Logger logger = Logger.getLogger(Game.class.getName());
 
@@ -35,7 +38,10 @@ public class GamePanel extends Application {
   private MainMenu mainMenu;
   private GameController controller;
   private Game game;
-
+  /**
+   * JavaFX application entry point.
+   * Initializes game systems and sets up the main window.
+   */
   @Override
   public void start(Stage stage){
     logger.info("Game started");
@@ -59,14 +65,19 @@ public class GamePanel extends Application {
     stage.setTitle("Dungeon Escape");
     stage.show();
   }
+  /**
+   * Renders a visual attack effect for monster attacks.
+   * Shows a directional triangle and expanding wave effect.
+   */
   private void drawMonsterAttackEffect(GraphicsContext gc, Enemy monster) {
     if (!monster.isAttacking()) return;
 
+    // Calculate attack animation progress (0-1)
     long attackDuration = System.currentTimeMillis() - monster.getAttackStartTime();
     double progress = Math.min(1.0, attackDuration / 1000.0); // normalize time attack (0-1)
     double alpha = 1.0 - progress * 0.8; //
 
-    // X, Y center of monster
+    // Calculate attack origin point
     double centerX = monster.getX() + ImageId.MONSTER.getWidth() / 2;
     double centerY = monster.getY() + ImageId.MONSTER.getHeight() / 2;
 
@@ -74,14 +85,14 @@ public class GamePanel extends Application {
     gc.setFill(new Color(1, 0, 0, alpha));
 
     if (monster.getAttackDirection() > 0) {
-      // to the Right attack
+      //  Right-facing attack
       gc.fillPolygon(
         new double[]{centerX + 30, centerX + 50, centerX + 30},
         new double[]{centerY - 10, centerY, centerY + 10},
         3
       );
     } else {
-      // to the Left
+      // Left-facing attack
       gc.fillPolygon(
         new double[]{centerX - 30, centerX - 50, centerX - 30},
         new double[]{centerY - 10, centerY, centerY + 10},
@@ -102,6 +113,10 @@ public class GamePanel extends Application {
       );
     }
   }
+  /**
+   * Creates and configures the main game scene.
+   * @return Configured Scene object with input handling
+   */
   private Scene createGameScene() {
     double sceneWidth = ImageId.BGR.getWidth();
     double sceneHeight = ImageId.BGR.getHeight();
@@ -110,7 +125,7 @@ public class GamePanel extends Application {
     StackPane root = new StackPane(canvas);
     Scene gameScene = new Scene(root, sceneWidth, sceneHeight);
 
-    // ESC input
+    // ESC key handling for pause menu
     gameScene.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
       if (event.getCode() == KeyCode.ESCAPE) {
         SaveLoad saveLoad = new SaveLoad(game);
@@ -126,8 +141,10 @@ public class GamePanel extends Application {
     startGameLoop(canvas, game, controller);
     return gameScene;
   }
+  /**
+   * Preloads all game images into memory.
+   */
   private void loadImages() {
-
     for (ImageId imgId : ImageId.values()) {
       Image image = new Image(imgId.getFileName());
       imgId.setWidth(image.getWidth());
@@ -135,17 +152,23 @@ public class GamePanel extends Application {
       gameImages.put(imgId, image);
     }
   }
+  /**
+   * Draws all game objects in proper render order.
+   */
   private void drawItems(Canvas canvas, Game game) {
     GraphicsContext gc = canvas.getGraphicsContext2D();
-
+    // Draw all standard game objects
     for (DrawableItem di : game.getItemsToDraw())
       gc.drawImage(gameImages.get(di.imageId()), di.x(), di.y());
-
+    // Draw attack effects if needed
     Enemy monster = game.getMonster();
     if (monster != null && monster.isAttacking()) {
       drawMonsterAttackEffect(gc, monster);
     }
   }
+  /**
+   * Renders player health bar with color-coded status.
+   */
   private void drawHealth(GraphicsContext gc) {
     double maxHealth = 10;
     double currentHealth = game.getPlayer().getHealth();
@@ -154,17 +177,20 @@ public class GamePanel extends Application {
     double x = 380;
     double y = 20;
 
-    // draw box
+    // Health bar frame
     gc.setStroke(Color.BLACK);
     gc.strokeRect(x, y, barWidth, barHeight);
 
-    // current health
+    // Dynamic health fill (green -> red as health decreases)
     double healthRatio = currentHealth / maxHealth;
     gc.setFill(Color.LIGHTGREEN);
     if (healthRatio < 0.3)
       gc.setFill(Color.RED);
     gc.fillRect(x, y, barWidth * healthRatio, barHeight);
   }
+  /**
+   * Starts the main game loop running.
+   */
   private void startGameLoop(Canvas canvas, Game game, GameController controller) {
     AnimationTimer gameLoop = new AnimationTimer() {
       @Override
