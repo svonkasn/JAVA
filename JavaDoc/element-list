@@ -1,0 +1,9 @@
+module:cz.cvut.fel.pjv.dungeon_escape
+cz.cvut.fel.pjv.dungeon_escape
+cz.cvut.fel.pjv.dungeon_escape.controller
+cz.cvut.fel.pjv.dungeon_escape.model
+cz.cvut.fel.pjv.dungeon_escape.model.entities
+cz.cvut.fel.pjv.dungeon_escape.model.environment
+cz.cvut.fel.pjv.dungeon_escape.model.items
+cz.cvut.fel.pjv.dungeon_escape.model.save_load
+cz.cvut.fel.pjv.dungeon_escape.view
