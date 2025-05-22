@@ -1,7 +1,9 @@
 package cz.cvut.fel.pjv.dungeon_escape.model;
 
 
+import cz.cvut.fel.pjv.dungeon_escape.model.entities.Player;
 import cz.cvut.fel.pjv.dungeon_escape.model.items.Key;
+import cz.cvut.fel.pjv.dungeon_escape.model.items.Potion;
 import cz.cvut.fel.pjv.dungeon_escape.model.items.Weapon;
 
 import java.util.ArrayList;
@@ -74,14 +76,24 @@ public class Inventory {
   public boolean hasWeapon() {
     return items.stream().anyMatch(item -> item instanceof Weapon);
   }
+  /** Checks if inventory contains any potion */
+  public boolean hasPotion() {
+    return items.stream().anyMatch(item -> item instanceof Potion);
+  }
+
 
   /**
    * Uses specified item if present.
-   * Currently just removes it (TODO: implement usage effects).
+   * Remove item from list
+   * update current position of item
    */
-  public void useItem(InventoryItem item) {
+  public void useItem(InventoryItem item, Player player) {
     if (items.contains(item)) {
-      items.remove(item);
+      if (item instanceof Potion) {
+        ((Potion) item).use(player);
+      } else {
+        items.remove(item);
+      }
       updateItemPosition();
     }
   }

@@ -88,7 +88,7 @@ public class Player extends GameItem {
    * @param heal The amount of health to restore
    */
   public void heal(int heal) {
-    health += heal;
+    health = Math.min(health + heal, 10);
   }
 
   /**
@@ -112,7 +112,6 @@ public class Player extends GameItem {
     this.inventory = new Inventory();
   }
 
-  public void addInventory(InventoryItem item) {inventory.addItm(item);}
   public Inventory getInventory() {
     return inventory;
   }

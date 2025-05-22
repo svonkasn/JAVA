@@ -1,13 +1,11 @@
 package cz.cvut.fel.pjv.dungeon_escape.model.items;
 
-import cz.cvut.fel.pjv.dungeon_escape.model.Game;
-import cz.cvut.fel.pjv.dungeon_escape.model.GameItem;
 import cz.cvut.fel.pjv.dungeon_escape.model.ImageId;
 import cz.cvut.fel.pjv.dungeon_escape.model.InventoryItem;
 import cz.cvut.fel.pjv.dungeon_escape.model.entities.Player;
 
 public class Potion extends InventoryItem {
-  private final int heal = 2;
+  private final int heal = 5;
   public Potion(ImageId imageId, double x, double y) {
     super(imageId, x, y);
   }
@@ -15,12 +13,8 @@ public class Potion extends InventoryItem {
   public void use(Player player){
     if (player.getHealth() < 10) {
       player.heal(heal);
+      player.getInventory().removeItm(this);
     }
   }
 
-//  @Override
-//  public void onCollect(Game game) {
-//    super.onCollect(game);
-//
-//  }
 }

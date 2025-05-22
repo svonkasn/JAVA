@@ -24,27 +24,36 @@ import java.util.stream.Collectors;
 public class Game {
   private static final Logger logger = Logger.getLogger(Game.class.getName());
 
+  private static final String FIRST_LEVEL = "level1.json";
+
   private GameState gameState = GameState.RUNNING;
   private boolean isInventoryOpen = false;
-
+  // Physics constants
   private final double gravity = 0.1;
+  // Game objects
   private final GameItem background = new GameItem(ImageId.BGR, 0, 0);
   private Door door;
   private final GameItem inventory = new GameItem(ImageId.INVENTORY, 0, 0);
   private final Player player;
   private Key key;
 
+  // Entity lists
   private final List<Platforms> platforms = new ArrayList<>();
   private final List<Plant> plants = new ArrayList<>();
   public final List<Enemy> enemyList = new ArrayList<>();
   private final List<InventoryItem> itemList = new ArrayList<>();
   private final List<GameItem> collidableObjects = new ArrayList<>();
 
+  /**
+   * Initializes a new game with default player and first level.
+   */
   public Game() {
     player = new Player(ImageId.PLAYER, 0, 0, 10, gravity);
-    loadLevel("level1.json");
   }
-
+  /**
+   * Loads a game level from JSON file.
+   * @param path Path to the level configuration file
+   */
   public void loadLevel(String path) {
     try {
       LevelLoader.loadLevel(this, path);
@@ -52,25 +61,46 @@ public class Game {
       e.printStackTrace();
     }
   }
+  /**
+   * Adds an enemy to the game world and collision system.
+   * @param enemy The enemy to add
+   */
   public void addEnemies(Enemy enemy){
     enemyList.add(enemy);
     addCollidableObject(enemy);
   }
+  /**
+   * Adds a plant to the game world.
+   * Big plants are added as scenery, others as collectibles.
+   * @param plant The plant to add
+   */
   public void addPlant(Plant plant) {
     if(plant.getImageId().equals(ImageId.PLANT_BIG)){
       plants.add(plant);
       return;
     }
     plants.add(plant);
-    addInventoryItem(plant);
+    addInventoryItem(plant);// Small plants are collectibles
   }
+  /**
+   * Adds a platform to the game world and collision system.
+   * @param platform The platform to add
+   */
   public void addPlatform(Platforms platform) {
     platforms.add(platform);
     addCollidableObject(platform);
   }
+  /**
+   * Adds an item to the global item list.
+   * @param item The inventory item to add
+   */
   public void addInventoryItem(InventoryItem item) {
     itemList.add(item);
   }
+  /**
+   * Adds an object to the collision detection system.
+   * @param gameItem The collidable object to add
+   */
   public void addCollidableObject(GameItem gameItem){
     collidableObjects.add(gameItem);
   }
@@ -128,7 +158,10 @@ public class Game {
     logger.info("Crafted potion!");
     return true;
   }
-
+  /**
+   * Damages all enemies colliding with player.
+   * Removes enemies that are defeated.
+   */
   public void damageEnemies() {
     List<Enemy> toRemove = new ArrayList<>();
 
@@ -179,6 +212,12 @@ public class Game {
       player.setSpeed(0);  // Stop vertical movement when hitting ceiling
     }
   }
+  /**
+   * Moves the player based on input states.
+   * @param left Whether left movement is requested
+   * @param right Whether right movement is requested
+   * @param jump Whether jump is requested
+   */
   public void movePlayer(boolean left, boolean right, boolean jump) {
     player.move(left, right, jump);
   }
@@ -244,13 +283,16 @@ public class Game {
 
     return items.toArray(new DrawableItem[0]);
   }
+  /**
+   * Resets all game entities to their initial state.
+   * Restores player health and resets positions.
+   */
   public void reset() {
   player.reset();
   player.setHealth(10);
 //  player.getInventory().reset();
     // Reset all items
     for (InventoryItem item : itemList) {
-//      System.out.println("Reset item: " + item.getImageId() + " at " + item.getX() + "," + item.getY());
       item.setCollected(false);
     item.reset();
   }

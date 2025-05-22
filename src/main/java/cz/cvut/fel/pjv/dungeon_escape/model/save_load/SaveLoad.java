@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import cz.cvut.fel.pjv.dungeon_escape.model.Game;
 import cz.cvut.fel.pjv.dungeon_escape.model.GameStateData;
 import cz.cvut.fel.pjv.dungeon_escape.model.entities.Player;
+import cz.cvut.fel.pjv.dungeon_escape.model.items.Key;
 import cz.cvut.fel.pjv.dungeon_escape.view.GamePanel;
 
 import java.io.File;
@@ -56,8 +57,7 @@ public class SaveLoad {
     gameData.setHealthPlayer(player.getHealth());
     gameData.setKeyTaken(game.getKey().isCollected());
 
-
-    try {
+  try {
       ObjectMapper om = new ObjectMapper();
       om.writeValue(new File(saveFile), gameData);
       logger.info("Game saved successfully");
@@ -85,7 +85,12 @@ public class SaveLoad {
       player.setX(gameData.getPlayerX());
       player.setY(gameData.getPlayerY());
       player.setHealth(gameData.getHealthPlayer());
-      game.getKey().setCollected(gameData.isKeyTaken());
+
+      Key key = game.getKey();
+      key.setCollected(gameData.isKeyTaken());
+      if (key.isCollected()) {
+        player.getInventory().addItm(key);
+      }
 
       logger.info("Game loaded successfully");
       return true;
