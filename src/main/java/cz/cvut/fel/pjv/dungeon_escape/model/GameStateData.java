@@ -8,9 +8,7 @@ public class GameStateData {
   private double playerY;
   private double healthPlayer;
   private boolean keyTaken;
-  private boolean plantsTaken;
   private boolean weaponTaken;
-  private boolean potionTaken;
 
   /**
    * Constructs an empty GameStateData object.
@@ -50,18 +48,13 @@ public class GameStateData {
     this.keyTaken = keyTaken;
   }
 
-  public void setPlantsTaken(boolean plantsTaken) {
-    this.plantsTaken = plantsTaken;
+  public boolean isWeaponTaken() {
+    return weaponTaken;
   }
 
   public void setWeaponTaken(boolean weaponTaken) {
     this.weaponTaken = weaponTaken;
   }
-
-  public void setPotionTaken(boolean potionTaken) {
-    this.potionTaken = potionTaken;
-  }
-
 }
 
 

@@ -8,6 +8,7 @@ import cz.cvut.fel.pjv.dungeon_escape.model.environment.Door;
 import cz.cvut.fel.pjv.dungeon_escape.model.environment.Plant;
 import cz.cvut.fel.pjv.dungeon_escape.model.items.Key;
 import cz.cvut.fel.pjv.dungeon_escape.model.items.Potion;
+import cz.cvut.fel.pjv.dungeon_escape.model.items.Weapon;
 import cz.cvut.fel.pjv.dungeon_escape.model.save_load.LevelLoader;
 import javafx.geometry.BoundingBox;
 
@@ -36,6 +37,7 @@ public class Game {
   private final GameItem inventory = new GameItem(ImageId.INVENTORY, 0, 0);
   private final Player player;
   private Key key;
+  private Weapon weapon;
 
   // Entity lists
   private final List<Platforms> platforms = new ArrayList<>();
@@ -49,6 +51,7 @@ public class Game {
    */
   public Game() {
     player = new Player(ImageId.PLAYER, 0, 0, 10, gravity);
+    loadLevel(FIRST_LEVEL);
   }
   /**
    * Loads a game level from JSON file.
@@ -370,6 +373,16 @@ public class Game {
   public Key getKey() {
     return key;
   }
+
+  public Weapon getWeapon() {
+    return weapon;
+  }
+
+  public void setWeapon(Weapon weapon) {
+    this.weapon = weapon;
+    addInventoryItem(weapon);
+  }
+
   public List<Enemy> getEnemyList() {
     return enemyList;
   }

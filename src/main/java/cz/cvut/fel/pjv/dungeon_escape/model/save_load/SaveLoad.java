@@ -56,6 +56,7 @@ public class SaveLoad {
     gameData.setPlayerY(player.getY());
     gameData.setHealthPlayer(player.getHealth());
     gameData.setKeyTaken(game.getKey().isCollected());
+    gameData.setWeaponTaken(game.getWeapon().isCollected());
 
   try {
       ObjectMapper om = new ObjectMapper();
@@ -85,12 +86,14 @@ public class SaveLoad {
       player.setX(gameData.getPlayerX());
       player.setY(gameData.getPlayerY());
       player.setHealth(gameData.getHealthPlayer());
+      game.getKey().setCollected(gameData.isKeyTaken());
+      game.getWeapon().setCollected(gameData.isWeaponTaken());
 
-      Key key = game.getKey();
-      key.setCollected(gameData.isKeyTaken());
-      if (key.isCollected()) {
-        player.getInventory().addItm(key);
-      }
+//      Key key = game.getKey();
+//      key.setCollected(gameData.isKeyTaken());
+//      if (key.isCollected()) {
+//        player.getInventory().addItm(key);
+//      }
 
       logger.info("Game loaded successfully");
       return true;

@@ -66,10 +66,11 @@ public class LevelLoader {
           break;
         case "Weapon":
           object = new Weapon(imageId, x, y);
+          game.setWeapon((Weapon) object);
           break;
       }
 
-      if (object != null) game.addInventoryItem(object);
+//      if (object != null) game.addInventoryItem(object);
     }
 
     // Load plants (optional)
