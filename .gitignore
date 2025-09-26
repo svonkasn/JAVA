@@ -4,7 +4,6 @@ target/
 !**/src/test/**/target/
 mvnw
 .mvn
-mvnw
 logging.properties
 
 
